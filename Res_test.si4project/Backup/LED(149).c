@@ -1,0 +1,58 @@
+#include "LED.h"
+
+
+void LED_Init_Config ( void )
+{
+	P2M0 = 0XC1;                        //设置P20推挽输出
+	P2M1 = 0XC1;                        //设置P21推挽输出
+	P2M2 = 0XC1;                        //设置P22推挽输出
+}
+
+
+static void LED_Toggle_Set ( Led_ID ledx )
+{
+	static u8 led_std = 1;
+	switch ( ledx )
+	{
+		case RED:
+			if ( led_std == 1 )
+			{
+				LED0 = 1;
+				led_std = 0;
+			}
+			else
+			{
+				LED0 = 0;
+				led_std = 1;
+			}
+			break;
+		case GREEN:
+			if ( led_std == 1 )
+			{
+				LED1 = 1;
+				led_std = 0;
+			}
+			else
+			{
+				LED1 = 0;
+				led_std = 1;
+			}
+			break;
+		case BLUE:
+			if ( led_std == 1 )
+			{
+				LED2 = 1;
+				led_std = 0;
+			}
+			else
+			{
+				LED2 = 0;
+				led_std = 1;
+			}
+			break;
+	}
+
+}
+
+
+

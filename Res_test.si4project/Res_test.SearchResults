@@ -1,0 +1,2 @@
+---- DIGITAL_TUBE_RESET Matches (1 in 1 files) ----
+system_digital_tube.h (Device\system_digital_tube) line 40 : 	DIGITAL_TUBE_RESET = 0,

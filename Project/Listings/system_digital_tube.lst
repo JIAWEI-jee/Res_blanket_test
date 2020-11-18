@@ -1,0 +1,229 @@
+C51 COMPILER V9.56.0.0   SYSTEM_DIGITAL_TUBE                                               11/16/2020 18:59:00 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE SYSTEM_DIGITAL_TUBE
+OBJECT MODULE PLACED IN .\Objects\system_digital_tube.obj
+COMPILER INVOKED BY: C:\program_list\keil\C51\BIN\C51.EXE ..\Device\system_digital_tube\system_digital_tube.c LARGE OPTI
+                    -MIZE(8,SPEED) BROWSE INCDIR(..\Device\LED;..\Device\system_digital_tube;..\Device\BEEP;..\Device\timer;..\Device\key;..\
+                    -Device\uart;..\Device\adc) DEBUG OBJECTEXTEND PRINT(.\Listings\system_digital_tube.lst) TABS(2) OBJECT(.\Objects\system_
+                    -digital_tube.obj)
+
+line level    source
+
+   1          #include "system_digital_tube.h"
+   2          
+   3          digital_tube_value_t tube_num = {0,0,0,0,0,1};
+   4          
+   5          void Tube_Init_Config ( void )
+   6          {
+   7   1        P1M0 = 0XC1;                        //设置成推挽输出
+   8   1        P1M1 = 0XC1;                        //设置成推挽输出
+   9   1        P1M2 = 0XC1;                        //设置成推挽输出
+  10   1        P1M3 = 0XC1;            //设置成推挽输出
+  11   1        P1M4 = 0XC1;             //设置成推挽输出
+  12   1        P1M5 = 0XC1;             //设置成推挽输出
+  13   1        P1M6 = 0XC1;              //设置成推挽输出
+  14   1        P0M4 = 0XC1;              //设置成推挽输出
+  15   1        P0M5 = 0XC1;             //设置成推挽输出
+  16   1        P0M6 = 0XC1;              //设置成推挽输出
+  17   1        P0M7 = 0XC1;             //设置成推挽输出
+  18   1      }
+  19          
+  20          static void digital_tube_set_num ( u8 num )
+  21          {
+  22   1        switch ( num )
+  23   1        {
+  24   2          case 0:
+  25   2            DIGITAL_TUBE_A = DIGITAL_TUBE_PIN_ON;
+  26   2            DIGITAL_TUBE_B = DIGITAL_TUBE_PIN_ON;
+  27   2            DIGITAL_TUBE_C = DIGITAL_TUBE_PIN_ON;
+  28   2            DIGITAL_TUBE_D = DIGITAL_TUBE_PIN_ON;
+  29   2            DIGITAL_TUBE_E = DIGITAL_TUBE_PIN_ON;
+  30   2            DIGITAL_TUBE_F = DIGITAL_TUBE_PIN_ON;
+  31   2            DIGITAL_TUBE_G = DIGITAL_TUBE_PIN_OFF;
+  32   2            break;
+  33   2      
+  34   2          case 1:
+  35   2            DIGITAL_TUBE_A = DIGITAL_TUBE_PIN_OFF;
+  36   2            DIGITAL_TUBE_B = DIGITAL_TUBE_PIN_ON;
+  37   2            DIGITAL_TUBE_C = DIGITAL_TUBE_PIN_ON;
+  38   2            DIGITAL_TUBE_D = DIGITAL_TUBE_PIN_OFF;
+  39   2            DIGITAL_TUBE_E = DIGITAL_TUBE_PIN_OFF;
+  40   2            DIGITAL_TUBE_F = DIGITAL_TUBE_PIN_OFF;
+  41   2            DIGITAL_TUBE_G = DIGITAL_TUBE_PIN_OFF;
+  42   2            break;
+  43   2      
+  44   2          case 2:
+  45   2            DIGITAL_TUBE_A = DIGITAL_TUBE_PIN_ON;
+  46   2            DIGITAL_TUBE_B = DIGITAL_TUBE_PIN_ON;
+  47   2            DIGITAL_TUBE_C = DIGITAL_TUBE_PIN_OFF;
+  48   2            DIGITAL_TUBE_D = DIGITAL_TUBE_PIN_ON;
+  49   2            DIGITAL_TUBE_E = DIGITAL_TUBE_PIN_ON;
+  50   2            DIGITAL_TUBE_F = DIGITAL_TUBE_PIN_OFF;
+  51   2            DIGITAL_TUBE_G = DIGITAL_TUBE_PIN_ON;
+  52   2            break;
+C51 COMPILER V9.56.0.0   SYSTEM_DIGITAL_TUBE                                               11/16/2020 18:59:00 PAGE 2   
+
+  53   2      
+  54   2          case 3:
+  55   2            DIGITAL_TUBE_A = DIGITAL_TUBE_PIN_ON;
+  56   2            DIGITAL_TUBE_B = DIGITAL_TUBE_PIN_ON;
+  57   2            DIGITAL_TUBE_C = DIGITAL_TUBE_PIN_ON;
+  58   2            DIGITAL_TUBE_D = DIGITAL_TUBE_PIN_ON;
+  59   2            DIGITAL_TUBE_E = DIGITAL_TUBE_PIN_OFF;
+  60   2            DIGITAL_TUBE_F = DIGITAL_TUBE_PIN_OFF;
+  61   2            DIGITAL_TUBE_G = DIGITAL_TUBE_PIN_ON;
+  62   2            break;
+  63   2      
+  64   2          case 4:
+  65   2            DIGITAL_TUBE_A = DIGITAL_TUBE_PIN_OFF;
+  66   2            DIGITAL_TUBE_B = DIGITAL_TUBE_PIN_ON;
+  67   2            DIGITAL_TUBE_C = DIGITAL_TUBE_PIN_ON;
+  68   2            DIGITAL_TUBE_D = DIGITAL_TUBE_PIN_OFF;
+  69   2            DIGITAL_TUBE_E = DIGITAL_TUBE_PIN_OFF;
+  70   2            DIGITAL_TUBE_F = DIGITAL_TUBE_PIN_ON;
+  71   2            DIGITAL_TUBE_G = DIGITAL_TUBE_PIN_ON;
+  72   2            break;
+  73   2      
+  74   2          case 5:
+  75   2            DIGITAL_TUBE_A = DIGITAL_TUBE_PIN_ON;
+  76   2            DIGITAL_TUBE_B = DIGITAL_TUBE_PIN_OFF;
+  77   2            DIGITAL_TUBE_C = DIGITAL_TUBE_PIN_ON;
+  78   2            DIGITAL_TUBE_D = DIGITAL_TUBE_PIN_ON;
+  79   2            DIGITAL_TUBE_E = DIGITAL_TUBE_PIN_OFF;
+  80   2            DIGITAL_TUBE_F = DIGITAL_TUBE_PIN_ON;
+  81   2            DIGITAL_TUBE_G = DIGITAL_TUBE_PIN_ON;
+  82   2            break;
+  83   2      
+  84   2          case 6:
+  85   2            DIGITAL_TUBE_A = DIGITAL_TUBE_PIN_ON;
+  86   2            DIGITAL_TUBE_B = DIGITAL_TUBE_PIN_OFF;
+  87   2            DIGITAL_TUBE_C = DIGITAL_TUBE_PIN_ON;
+  88   2            DIGITAL_TUBE_D = DIGITAL_TUBE_PIN_ON;
+  89   2            DIGITAL_TUBE_E = DIGITAL_TUBE_PIN_ON;
+  90   2            DIGITAL_TUBE_F = DIGITAL_TUBE_PIN_ON;
+  91   2            DIGITAL_TUBE_G = DIGITAL_TUBE_PIN_ON;
+  92   2            break;
+  93   2      
+  94   2          case 7:
+  95   2            DIGITAL_TUBE_A = DIGITAL_TUBE_PIN_ON;
+  96   2            DIGITAL_TUBE_B = DIGITAL_TUBE_PIN_ON;
+  97   2            DIGITAL_TUBE_C = DIGITAL_TUBE_PIN_ON;
+  98   2            DIGITAL_TUBE_D = DIGITAL_TUBE_PIN_OFF;
+  99   2            DIGITAL_TUBE_E = DIGITAL_TUBE_PIN_OFF;
+ 100   2            DIGITAL_TUBE_F = DIGITAL_TUBE_PIN_OFF;
+ 101   2            DIGITAL_TUBE_G = DIGITAL_TUBE_PIN_OFF;
+ 102   2            break;
+ 103   2      
+ 104   2          case 8:
+ 105   2            DIGITAL_TUBE_A = DIGITAL_TUBE_PIN_ON;
+ 106   2            DIGITAL_TUBE_B = DIGITAL_TUBE_PIN_ON;
+ 107   2            DIGITAL_TUBE_C = DIGITAL_TUBE_PIN_ON;
+ 108   2            DIGITAL_TUBE_D = DIGITAL_TUBE_PIN_ON;
+ 109   2            DIGITAL_TUBE_E = DIGITAL_TUBE_PIN_ON;
+ 110   2            DIGITAL_TUBE_F = DIGITAL_TUBE_PIN_ON;
+ 111   2            DIGITAL_TUBE_G = DIGITAL_TUBE_PIN_ON;
+ 112   2            break;
+ 113   2      
+ 114   2          case 9:
+C51 COMPILER V9.56.0.0   SYSTEM_DIGITAL_TUBE                                               11/16/2020 18:59:00 PAGE 3   
+
+ 115   2            DIGITAL_TUBE_A = DIGITAL_TUBE_PIN_ON;
+ 116   2            DIGITAL_TUBE_B = DIGITAL_TUBE_PIN_ON;
+ 117   2            DIGITAL_TUBE_C = DIGITAL_TUBE_PIN_ON;
+ 118   2            DIGITAL_TUBE_D = DIGITAL_TUBE_PIN_ON;
+ 119   2            DIGITAL_TUBE_E = DIGITAL_TUBE_PIN_OFF;
+ 120   2            DIGITAL_TUBE_F = DIGITAL_TUBE_PIN_ON;
+ 121   2            DIGITAL_TUBE_G = DIGITAL_TUBE_PIN_ON;
+ 122   2            break;
+ 123   2          case 0xff:
+ 124   2            DIGITAL_TUBE_A = DIGITAL_TUBE_PIN_ON;
+ 125   2            DIGITAL_TUBE_B = DIGITAL_TUBE_PIN_OFF;
+ 126   2            DIGITAL_TUBE_C = DIGITAL_TUBE_PIN_OFF;
+ 127   2            DIGITAL_TUBE_D = DIGITAL_TUBE_PIN_OFF;
+ 128   2            DIGITAL_TUBE_E = DIGITAL_TUBE_PIN_ON;
+ 129   2            DIGITAL_TUBE_F = DIGITAL_TUBE_PIN_ON;
+ 130   2            DIGITAL_TUBE_G = DIGITAL_TUBE_PIN_ON;
+ 131   2            break;
+ 132   2        }
+ 133   1      
+ 134   1      
+ 135   1      }
+ 136          
+ 137          void digital_tube_timer_handle ( digital_tube_value_t value )
+ 138          {
+ 139   1        static u8 machine_state = 0;
+ 140   1      
+ 141   1        if ( value.tube_std == DIGITAL_TUBE_ON )
+ 142   1        {
+ 143   2          switch ( machine_state )
+ 144   2          {
+ 145   3            case 0:
+ 146   3              digital_tube_set_num ( value.bit1 );
+ 147   3              DIGITAL_BIT1_SET;
+ 148   3              DIGITAL_BIT2_CLEAR;
+ 149   3              DIGITAL_BIT3_CLEAR;
+ 150   3              DIGITAL_BIT4_CLEAR;
+ 151   3              machine_state = 1;
+ 152   3              break;
+ 153   3      
+ 154   3            case 1:
+ 155   3              digital_tube_set_num ( value.bit2 );
+ 156   3              DIGITAL_BIT1_CLEAR;
+ 157   3              DIGITAL_BIT2_SET;
+ 158   3              DIGITAL_BIT3_CLEAR;
+ 159   3              DIGITAL_BIT4_CLEAR;
+ 160   3              machine_state = 2;
+ 161   3              break;
+ 162   3      
+ 163   3            case 2:
+ 164   3              digital_tube_set_num ( value.bit3 );
+ 165   3              DIGITAL_BIT1_CLEAR;
+ 166   3              DIGITAL_BIT2_CLEAR;
+ 167   3              DIGITAL_BIT3_SET;
+ 168   3              DIGITAL_BIT4_CLEAR;
+ 169   3              machine_state = 3;
+ 170   3              break;
+ 171   3      
+ 172   3      
+ 173   3            case 3:
+ 174   3              digital_tube_set_num ( value.bit4 );
+ 175   3              DIGITAL_BIT1_CLEAR;
+ 176   3              DIGITAL_BIT2_CLEAR;
+C51 COMPILER V9.56.0.0   SYSTEM_DIGITAL_TUBE                                               11/16/2020 18:59:00 PAGE 4   
+
+ 177   3              DIGITAL_BIT3_CLEAR;
+ 178   3              DIGITAL_BIT4_SET;
+ 179   3              machine_state = 0;
+ 180   3              break;
+ 181   3          }
+ 182   2        }
+ 183   1        else if ( value.tube_std == DIGITAL_TUBE_OFF )
+ 184   1        {
+ 185   2          DIGITAL_BIT1_CLEAR;
+ 186   2          DIGITAL_BIT2_CLEAR;
+ 187   2          DIGITAL_BIT3_CLEAR;
+ 188   2          DIGITAL_BIT4_CLEAR;
+ 189   2          machine_state = 0;
+ 190   2      
+ 191   2        }
+ 192   1      
+ 193   1      }
+ 194          
+ 195          
+ 196          
+ 197          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    355    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =      7       6
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

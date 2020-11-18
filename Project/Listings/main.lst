@@ -1,0 +1,74 @@
+C51 COMPILER V9.56.0.0   MAIN                                                              11/16/2020 18:59:00 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\program_list\keil\C51\BIN\C51.EXE ..\user\main.c LARGE OPTIMIZE(8,SPEED) BROWSE INCDIR(..\Device
+                    -\LED;..\Device\system_digital_tube;..\Device\BEEP;..\Device\timer;..\Device\key;..\Device\uart;..\Device\adc) DEBUG OBJE
+                    -CTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          /**
+   2          *   1cai
+   3          * @Examle Version   V1.0.2.0
+   4          * @Demo   Version   V1.0.2.0
+   5          * @Date       2020.11.07
+   6          * 发热毯电阻测试板
+   7          **/
+   8          
+   9          
+  10          #define ALLOCATE_EXTERN
+  11          #include "HC89F303B.h"
+  12          #include "LED.h"
+  13          #include "system_digital_tube.h"
+  14          #include "Beep.h"
+  15          #include "timer.h"
+  16          #include "key.h"
+  17          #include "uart.h"
+  18          #include "adc.h"
+  19          
+  20          void main ( void )
+  21          {
+  22   1        device_init ( );
+  23   1        EA = 1;//开启总中断
+  24   1        LED_Init_Config ( );
+  25   1        Tube_Init_Config ( );
+  26   1        Beep_Init_Config();
+  27   1        timer_Init_Config();
+  28   1        Key_Init_Config ( );
+  29   1        ADC_Init_Config();
+  30   1        uart_init();
+  31   1      
+  32   1      
+  33   1        gm_printf ( "\r\n==================================\r\n" );
+  34   1        gm_printf ( "test_soft V1.00.00 \r\n");
+  35   1        gm_printf ( "\r\n==================================\r\n" );
+  36   1      
+  37   1        
+  38   1        while ( 1 )
+  39   1        {
+  40   2           if(systick_10ms)
+  41   2            {
+  42   3                systick_10ms = 0;
+  43   3            beep_Blink ( );
+  44   3            }
+  45   2        }
+  46   1      }
+  47          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     66    ----
+   CONSTANT SIZE    =     61    ----
+   XDATA SIZE       =   ----    ----
+C51 COMPILER V9.56.0.0   MAIN                                                              11/16/2020 18:59:00 PAGE 2   
+
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

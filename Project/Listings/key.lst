@@ -1,0 +1,304 @@
+C51 COMPILER V9.56.0.0   KEY                                                               11/16/2020 18:59:00 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE KEY
+OBJECT MODULE PLACED IN .\Objects\key.obj
+COMPILER INVOKED BY: C:\program_list\keil\C51\BIN\C51.EXE ..\Device\key\key.c LARGE OPTIMIZE(8,SPEED) BROWSE INCDIR(..\D
+                    -evice\LED;..\Device\system_digital_tube;..\Device\BEEP;..\Device\timer;..\Device\key;..\Device\uart;..\Device\adc) DEBUG
+                    - OBJECTEXTEND PRINT(.\Listings\key.lst) TABS(2) OBJECT(.\Objects\key.obj)
+
+line level    source
+
+   1          #include "key.h"
+   2          #include "system_digital_tube.h"
+   3          #include "uart.h"
+   4          #include "adc.h"
+   5          
+   6          
+   7          void Key_Init_Config ( void )
+   8          {
+   9   1        P3M5 = 0x61;                        //P35上拉输入
+  10   1        P2M5 = 0x61;                        //P25上拉输入
+  11   1      }
+  12          
+  13          static unsigned char KEY_UP_Driver ( void )
+  14          {
+  15   1        static unsigned char key_state = 0;
+  16   1        static unsigned int key_time = 0;
+  17   1        unsigned char key_press, key_return;
+  18   1      
+  19   1        key_return = N_KEY;
+  20   1      
+  21   1        key_press = KEY_1;
+  22   1        switch ( key_state )
+  23   1        {
+  24   2          case KEY_STATE_0:
+  25   2            if ( key_press == 0 )
+  26   2            {
+  27   3              key_time = 0;
+  28   3              key_state = KEY_STATE_1;
+  29   3            }
+  30   2            break;
+  31   2      
+  32   2          case KEY_STATE_1:
+  33   2            if ( key_press == 0 )
+  34   2            {
+  35   3              key_time++;
+  36   3              if ( key_time>=SINGLE_KEY_TIME )
+  37   3              {
+  38   4                key_state = KEY_STATE_2;
+  39   4              }
+  40   3            }
+  41   2            else
+  42   2            {
+  43   3              key_state = KEY_STATE_0;
+  44   3            }
+  45   2            break;
+  46   2      
+  47   2          case KEY_STATE_2:
+  48   2            if ( key_press == 1 )
+  49   2            {
+  50   3              key_return = KEY_1_SHORT;
+  51   3              key_state = KEY_STATE_0;
+  52   3            }
+  53   2            else
+C51 COMPILER V9.56.0.0   KEY                                                               11/16/2020 18:59:00 PAGE 2   
+
+  54   2            {
+  55   3              key_time++;
+  56   3      
+  57   3              if ( key_time >= LONG_KEY_TIME )
+  58   3              {
+  59   4                key_return = KEY_1_LONG;
+  60   4                key_state = KEY_STATE_3;
+  61   4              }
+  62   3            }
+  63   2            break;
+  64   2      
+  65   2          case KEY_STATE_3:
+  66   2            if ( key_press == 1 )
+  67   2            {
+  68   3              key_state = KEY_STATE_0;
+  69   3            }
+  70   2            break;
+  71   2      
+  72   2          default:
+  73   2            key_state = KEY_STATE_0;
+  74   2            break;
+  75   2        }
+  76   1      
+  77   1        return key_return;
+  78   1      
+  79   1      }
+  80          
+  81          
+  82          static unsigned char KEY_Down_Driver ( void )
+  83          {
+  84   1        static unsigned char key_state = 0;
+  85   1        static unsigned int key_time = 0;
+  86   1        unsigned char key_press, key_return;
+  87   1      
+  88   1        key_return = N_KEY;
+  89   1      
+  90   1        key_press = KEY_2;
+  91   1        switch ( key_state )
+  92   1        {
+  93   2          case KEY_STATE_0:
+  94   2            if ( key_press == 0 )
+  95   2            {
+  96   3              key_time = 0;
+  97   3              key_state = KEY_STATE_1;
+  98   3            }
+  99   2            break;
+ 100   2      
+ 101   2          case KEY_STATE_1:
+ 102   2            if ( key_press == 0 )
+ 103   2            {
+ 104   3              key_time++;
+ 105   3              if ( key_time>=SINGLE_KEY_TIME )
+ 106   3              {
+ 107   4                key_state = KEY_STATE_2;
+ 108   4              }
+ 109   3            }
+ 110   2            else
+ 111   2            {
+ 112   3              key_state = KEY_STATE_0;
+ 113   3            }
+ 114   2            break;
+ 115   2      
+C51 COMPILER V9.56.0.0   KEY                                                               11/16/2020 18:59:00 PAGE 3   
+
+ 116   2          case KEY_STATE_2:
+ 117   2            if ( key_press == 1 )
+ 118   2            {
+ 119   3              key_return = KEY_2_SHORT;
+ 120   3              key_state = KEY_STATE_0;
+ 121   3            }
+ 122   2            else
+ 123   2            {
+ 124   3              key_time++;
+ 125   3      
+ 126   3              if ( key_time >= LONG_KEY_TIME )
+ 127   3              {
+ 128   4                key_return = KEY_2_LONG;
+ 129   4                key_state = KEY_STATE_3;
+ 130   4              }
+ 131   3            }
+ 132   2            break;
+ 133   2      
+ 134   2          case KEY_STATE_3:
+ 135   2            if ( key_press == 1 )
+ 136   2            {
+ 137   3              key_state = KEY_STATE_0;
+ 138   3            }
+ 139   2            break;
+ 140   2      
+ 141   2          default:
+ 142   2            key_state = KEY_STATE_0;
+ 143   2            break;
+ 144   2        }
+ 145   1      
+ 146   1        return key_return;
+ 147   1      
+ 148   1      }
+ 149          
+ 150          
+ 151          static u8 key_scanf ( void )
+ 152          {
+ 153   1        u8 key_up = 0,key_down = 0;
+ 154   1        key_up = KEY_UP_Driver();
+ 155   1        key_down = KEY_Down_Driver();
+ 156   1        if ( key_up == KEY_1_SHORT )
+ 157   1        {
+ 158   2          return KEY_UP_SHORT_STD;
+ 159   2        }
+ 160   1        else if ( key_up == KEY_1_LONG )
+ 161   1        {
+ 162   2          return KEY_UP_LONG_STD;
+ 163   2        }
+ 164   1        if ( key_down == KEY_2_SHORT )
+ 165   1        {
+ 166   2          return KEY_DOWN_SHORT_STD;
+ 167   2        }
+ 168   1        else if ( key_down == KEY_2_LONG )
+ 169   1        {
+ 170   2          return KEY_DOWN_LONG_STD;
+ 171   2        }
+ 172   1        return N_KEY;
+ 173   1      }
+ 174          
+ 175          static void Key_SKU_display ( void )
+ 176          {
+ 177   1          tube_num.SKU_std++;
+C51 COMPILER V9.56.0.0   KEY                                                               11/16/2020 18:59:00 PAGE 4   
+
+ 178   1          if ( tube_num.SKU_std > SKU_MAX )
+ 179   1          {
+ 180   2            tube_num.SKU_std = 1;
+ 181   2          }
+ 182   1        
+ 183   1        switch ( tube_num.SKU_std )
+ 184   1        {
+ 185   2          case K9011:
+ 186   2            tube_num.bit1 = 9;
+ 187   2            tube_num.bit2 = 0;
+ 188   2            tube_num.bit3 = 1;
+ 189   2            tube_num.bit4 = 1;
+ 190   2            break;
+ 191   2          case K9018:
+ 192   2            tube_num.bit1 = 9;
+ 193   2            tube_num.bit2 = 0;
+ 194   2            tube_num.bit3 = 1;
+ 195   2            tube_num.bit4 = 8;
+ 196   2            break;
+ 197   2          case K9019:
+ 198   2            tube_num.bit1 = 9;
+ 199   2            tube_num.bit2 = 0;
+ 200   2            tube_num.bit3 = 1;
+ 201   2            tube_num.bit4 = 9;
+ 202   2      
+ 203   2            break;
+ 204   2          case K9025:
+ 205   2            tube_num.bit1 = 9;
+ 206   2            tube_num.bit2 = 0;
+ 207   2            tube_num.bit3 = 2;
+ 208   2            tube_num.bit4 = 5;
+ 209   2            break;
+ 210   2          case K9029:
+ 211   2            tube_num.bit1 = 9;
+ 212   2            tube_num.bit2 = 0;
+ 213   2            tube_num.bit3 = 2;
+ 214   2            tube_num.bit4 = 9;
+ 215   2            break;
+ 216   2          case K8104:
+ 217   2            tube_num.bit1 = 8;
+ 218   2            tube_num.bit2 = 1;
+ 219   2            tube_num.bit3 = 0;
+ 220   2            tube_num.bit4 = 4;
+ 221   2            break;
+ 222   2          case K8105:
+ 223   2            tube_num.bit1 = 8;
+ 224   2            tube_num.bit2 = 1;
+ 225   2            tube_num.bit3 = 0;
+ 226   2            tube_num.bit4 = 5;
+ 227   2            break;
+ 228   2          case K9028:
+ 229   2            tube_num.bit1 = 9;
+ 230   2            tube_num.bit2 = 0;
+ 231   2            tube_num.bit3 = 2;
+ 232   2            tube_num.bit4 = 8;
+ 233   2            break;
+ 234   2          case K9014:
+ 235   2            tube_num.bit1 = 9;
+ 236   2            tube_num.bit2 = 0;
+ 237   2            tube_num.bit3 = 1;
+ 238   2            tube_num.bit4 = 4;
+ 239   2            break;
+C51 COMPILER V9.56.0.0   KEY                                                               11/16/2020 18:59:00 PAGE 5   
+
+ 240   2          case K9017:
+ 241   2            tube_num.bit1 = 9;
+ 242   2            tube_num.bit2 = 0;
+ 243   2            tube_num.bit3 = 1;
+ 244   2            tube_num.bit4 = 7;
+ 245   2            break;
+ 246   2        }
+ 247   1      }
+ 248          
+ 249          
+ 250          void key_handle ( void )
+ 251          {
+ 252   1        u8 value = 0;
+ 253   1        value = key_scanf ();
+ 254   1        switch ( value )
+ 255   1        {
+ 256   2          case KEY_UP_SHORT_STD:
+ 257   2             Key_SKU_display ();
+ 258   2            break;
+ 259   2          case KEY_UP_LONG_STD:
+ 260   2            tube_num.tube_std = DIGITAL_TUBE_ON;
+ 261   2            break;
+ 262   2          case KEY_DOWN_SHORT_STD:
+ 263   2            Blanket_Cacl_Process (  );
+ 264   2            break;
+ 265   2          case KEY_DOWN_LONG_STD:
+ 266   2            tube_num.tube_std = DIGITAL_TUBE_OFF;
+ 267   2            break;
+ 268   2        }
+ 269   1      
+ 270   1      }
+ 271          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    598    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =      6    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

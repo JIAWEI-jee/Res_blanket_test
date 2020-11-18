@@ -1,0 +1,11 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\LED.obj",
+".\Objects\system_digital_tube.obj",
+".\Objects\Beep.obj",
+".\Objects\timer.obj",
+".\Objects\key.obj",
+".\Objects\uart.obj",
+".\Objects\adc.obj" 
+TO ".\Objects\Pro" 
+PRINT(".\Listings\Pro.m51") RAMSIZE(256) 
