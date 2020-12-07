@@ -38,44 +38,17 @@ void LED_Init_Config ( void )
 
 static void LED_Toggle_Set ( Led_ID ledx )
 {
-	static u8 led_std = 1;
+	
 	switch ( ledx )
 	{
 		case RED:
-			if ( led_std == 1 )
-			{
-				LED0 = 1;
-				led_std = 0;
-			}
-			else
-			{
-				LED0 = 0;
-				led_std = 1;
-			}
+			LED0 = !LED0;
 			break;
 		case GREEN:
-			if ( led_std == 1 )
-			{
-				LED1 = 1;
-				led_std = 0;
-			}
-			else
-			{
-				LED1 = 0;
-				led_std = 1;
-			}
+			LED1 = !LED1;
 			break;
 		case YELLOW:
-			if ( led_std == 1 )
-			{
-				LED2 = 1;
-				led_std = 0;
-			}
-			else
-			{
-				LED2 = 0;
-				led_std = 1;
-			}
+			LED2 = !LED2;
 			break;
 	}
 

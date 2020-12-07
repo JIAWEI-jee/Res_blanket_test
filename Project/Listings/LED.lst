@@ -1,11 +1,11 @@
-C51 COMPILER V9.56.0.0   LED                                                               11/16/2020 18:59:00 PAGE 1   
+C51 COMPILER V9.56.0.0   LED                                                               12/07/2020 17:39:22 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE LED
 OBJECT MODULE PLACED IN .\Objects\LED.obj
 COMPILER INVOKED BY: C:\program_list\keil\C51\BIN\C51.EXE ..\Device\LED\LED.c LARGE OPTIMIZE(8,SPEED) BROWSE INCDIR(..\D
                     -evice\LED;..\Device\system_digital_tube;..\Device\BEEP;..\Device\timer;..\Device\key;..\Device\uart;..\Device\adc) DEBUG
-                    - OBJECTEXTEND PRINT(.\Listings\LED.lst) TABS(2) OBJECT(.\Objects\LED.obj)
+                    - OBJECTEXTEND PRINT(.\Listings\LED.lst) OBJECT(.\Objects\LED.obj)
 
 line level    source
 
@@ -14,94 +14,67 @@ line level    source
    3          
    4          void device_init ( void )
    5          {
-   6   1        /************************************系统初始化****************************************/
-   7   1        // CLKSWR = 0x51;           //选择内部高频RC为系统时钟，内部高频RC 2分频，Fosc=16MHz
-   8   1        CLKSWR = 0x51;  //8分频 32/8 = 4M
-   9   1        CLKDIV = 0x01;            //Fosc 1分频得到Fcpu，Fcpu=16MHz
-  10   1                    //P02设置为非施密特数字输入
+   6   1              /************************************系统初始化****************************************/
+   7   1              // CLKSWR = 0x51;                                               //选择内部高频RC为系统时钟，内部高频RC 2分频，Fosc=16MHz
+   8   1              CLKSWR = 0x51;  //8分频 32/8 = 4M
+   9   1              CLKDIV = 0x01;                                          //Fosc 1分频得到Fcpu，Fcpu=16MHz
+  10   1                                                              //P02设置为非施密特数字输入
   11   1      }
   12          
   13          
   14          void LED_Init_Config ( void )
   15          {
-  16   1        P2M0 = 0XC1;                        //设置P20推挽输出
-  17   1        P2M1 = 0XC1;                        //设置P21推挽输出
-  18   1        P2M2 = 0XC1;                        //设置P22推挽输出
-  19   1        LED0 = 1;
-  20   1        LED1 = 1;
-  21   1        LED2 = 1;
+  16   1              P2M0 = 0XC1;                        //设置P20推挽输出
+  17   1              P2M1 = 0XC1;                        //设置P21推挽输出
+  18   1              P2M2 = 0XC1;                        //设置P22推挽输出
+  19   1              LED0 = 1;
+  20   1              LED1 = 1;
+  21   1              LED2 = 1;
   22   1      }
   23          
   24           void LED_All_off(void)
   25          {
-  26   1        LED0 = 1;
-  27   1        LED1 = 1;
-  28   1        LED2 = 1;
+  26   1              LED0 = 1;
+  27   1              LED1 = 1;
+  28   1              LED2 = 1;
   29   1      }
   30          
   31           void LED_All_on(void)
   32          {
-  33   1        LED0 = 0;
-  34   1        LED1 = 0;
-  35   1        LED2 = 0;
+  33   1              LED0 = 0;
+  34   1              LED1 = 0;
+  35   1              LED2 = 0;
   36   1      }
   37          
   38          
   39          static void LED_Toggle_Set ( Led_ID ledx )
   40          {
-  41   1        static u8 led_std = 1;
-  42   1        switch ( ledx )
-  43   1        {
-  44   2          case RED:
-  45   2            if ( led_std == 1 )
-  46   2            {
-  47   3              LED0 = 1;
-  48   3              led_std = 0;
-  49   3            }
-  50   2            else
-  51   2            {
-  52   3              LED0 = 0;
-  53   3              led_std = 1;
-C51 COMPILER V9.56.0.0   LED                                                               11/16/2020 18:59:00 PAGE 2   
+  41   1              
+  42   1              switch ( ledx )
+  43   1              {
+  44   2                      case RED:
+  45   2                              LED0 = !LED0;
+  46   2                              break;
+  47   2                      case GREEN:
+  48   2                              LED1 = !LED1;
+  49   2                              break;
+  50   2                      case YELLOW:
+  51   2                              LED2 = !LED2;
+  52   2                              break;
+  53   2              }
+C51 COMPILER V9.56.0.0   LED                                                               12/07/2020 17:39:22 PAGE 2   
 
-  54   3            }
-  55   2            break;
-  56   2          case GREEN:
-  57   2            if ( led_std == 1 )
-  58   2            {
-  59   3              LED1 = 1;
-  60   3              led_std = 0;
-  61   3            }
-  62   2            else
-  63   2            {
-  64   3              LED1 = 0;
-  65   3              led_std = 1;
-  66   3            }
-  67   2            break;
-  68   2          case YELLOW:
-  69   2            if ( led_std == 1 )
-  70   2            {
-  71   3              LED2 = 1;
-  72   3              led_std = 0;
-  73   3            }
-  74   2            else
-  75   2            {
-  76   3              LED2 = 0;
-  77   3              led_std = 1;
-  78   3            }
-  79   2            break;
-  80   2        }
-  81   1      
-  82   1      }
-  83          
-  84          
-  85          
+  54   1      
+  55   1      }
+  56          
+  57          
+  58          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    110    ----
+   CODE SIZE        =     66    ----
    CONSTANT SIZE    =   ----    ----
-   XDATA SIZE       =      1    ----
+   XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----

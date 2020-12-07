@@ -16,7 +16,7 @@ void Beep_Init_Config ( void )
 {
 	P1M7 = 0XC1;                        //设置P17推挽输出
 	PWM3_MAP = 0x17;
-	pwm_period = ( 31250/200 )-1;			//31250 = 4000000/128
+	pwm_period = ( 31250/200 )-1;		//31250 = 4000000/128
 	PWM3P = pwm_period;
 
 	PWM3C = 0x95;

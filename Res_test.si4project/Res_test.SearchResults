@@ -1,2 +1,5 @@
----- DIGITAL_TUBE_RESET Matches (1 in 1 files) ----
-system_digital_tube.h (Device\system_digital_tube) line 40 : 	DIGITAL_TUBE_RESET = 0,
+---- systick_2min Matches (4 in 1 files) ----
+adc.c (Device\adc) line 11 : u16 systick_2min = 0;
+SKU_Res_test in adc.c (Device\adc) : 		systick_2min = 0;
+Blanket_Cacl_Process in adc.c (Device\adc) : 		if ( ++systick_2min > TIME2OFF )
+Blanket_Cacl_Process in adc.c (Device\adc) : 			systick_2min = 0;

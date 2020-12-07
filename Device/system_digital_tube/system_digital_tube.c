@@ -1,6 +1,6 @@
 #include "system_digital_tube.h"
 
-digital_tube_value_t tube_num = {0,0,0,0,0,1};
+digital_tube_value_t tube_num = {0,0,0,0,0,ON};
 
 void Tube_Init_Config ( void )
 {
@@ -138,7 +138,7 @@ void digital_tube_timer_handle ( digital_tube_value_t value )
 {
 	static u8 machine_state = 0;
 
-	if ( value.tube_std == DIGITAL_TUBE_ON )
+	if ( value.tube_std == ON )
 	{
 		switch ( machine_state )
 		{
@@ -180,7 +180,7 @@ void digital_tube_timer_handle ( digital_tube_value_t value )
 				break;
 		}
 	}
-	else if ( value.tube_std == DIGITAL_TUBE_OFF )
+	else if ( value.tube_std == OFF )
 	{
 		DIGITAL_BIT1_CLEAR;
 		DIGITAL_BIT2_CLEAR;

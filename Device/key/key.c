@@ -6,8 +6,8 @@
 
 void Key_Init_Config ( void )
 {
-	P3M5 = 0x61;                        //P35上拉输入
-	P2M5 = 0x61;                        //P25上拉输入
+	//P3M5 = 0x61;                        //P35上拉输入
+	P3M4 = 0x61;                        //P25上拉输入
 }
 
 static unsigned char KEY_UP_Driver ( void )
@@ -174,12 +174,12 @@ static u8 key_scanf ( void )
 
 static void Key_SKU_display ( void )
 {
-		tube_num.SKU_std++;
-		if ( tube_num.SKU_std > SKU_MAX )
-		{
-			tube_num.SKU_std = 1;
-		}
-	
+	tube_num.SKU_std++;
+	if ( tube_num.SKU_std > SKU_MAX )
+	{
+		tube_num.SKU_std = 1;
+	}
+
 	switch ( tube_num.SKU_std )
 	{
 		case K9011:
@@ -243,9 +243,26 @@ static void Key_SKU_display ( void )
 			tube_num.bit3 = 1;
 			tube_num.bit4 = 7;
 			break;
+		case K9045:
+			tube_num.bit1 = 9;
+			tube_num.bit2 = 0;
+			tube_num.bit3 = 4;
+			tube_num.bit4 = 5;
+			break;
 	}
 }
 
+static void set_ONorOFF ( void )
+{
+	if ( tube_num.tube_std == ON )
+	{
+		tube_num.tube_std =  OFF;
+	}
+	else if ( tube_num.tube_std == OFF )
+	{
+		tube_num.tube_std =  ON;
+	}
+}
 
 void key_handle ( void )
 {
@@ -254,16 +271,14 @@ void key_handle ( void )
 	switch ( value )
 	{
 		case KEY_UP_SHORT_STD:
-			 Key_SKU_display ();
 			break;
 		case KEY_UP_LONG_STD:
-			tube_num.tube_std = DIGITAL_TUBE_ON;
 			break;
 		case KEY_DOWN_SHORT_STD:
-			Blanket_Cacl_Process (  );
+			Key_SKU_display ();
 			break;
 		case KEY_DOWN_LONG_STD:
-			tube_num.tube_std = DIGITAL_TUBE_OFF;
+			set_ONorOFF();
 			break;
 	}
 

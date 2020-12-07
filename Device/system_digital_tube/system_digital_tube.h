@@ -39,11 +39,10 @@ typedef enum
 
 typedef enum
 {
-	DIGITAL_TUBE_ON = 1,
-	DIGITAL_TUBE_OFF,
-	DIGITAL_TUBE_TEMPER_ERROR,
+	DIGITAL_TUBE_TEMPER_ERROR = 1,
 	DIGITAL_TUBE_HEAT_ERROR,
-
+    ON,
+    OFF
 } TUBE_std_set;
 
 

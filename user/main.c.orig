@@ -17,6 +17,8 @@
 #include "uart.h"
 #include "adc.h"
 
+u8 systick_1s = 0;
+
 void main ( void )
 {
 	device_init ( );
@@ -31,17 +33,22 @@ void main ( void )
 
 
 	gm_printf ( "\r\n==================================\r\n" );
-	gm_printf ( "test_soft V1.00.00 \r\n");
+	gm_printf ( "test_soft V1.00.00 \r\n" );
 	gm_printf ( "\r\n==================================\r\n" );
 
-	
+
 	while ( 1 )
 	{
-     if(systick_10ms)
-     	{
-       systick_10ms = 0;
-		  beep_Blink ( );
-	    }
+		if ( systick_10ms )
+		{
+			systick_10ms = 0;
+			beep_Blink ( );
+			if(++systick_1s > 100)
+				{
+                  systick_1s = 0;
+				  Blanket_Cacl_Process( );
+			    }
+		}
 	}
 }
 

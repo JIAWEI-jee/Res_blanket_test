@@ -1,5 +1,7 @@
 #include "key.h"
 #include "system_digital_tube.h"
+#include "uart.h"
+#include "adc.h"
 
 
 void Key_Init_Config ( void )
@@ -165,109 +167,120 @@ static u8 key_scanf ( void )
 	}
 	else if ( key_down == KEY_2_LONG )
 	{
-		return KEY_DOWN_SHORT_STD;
+		return KEY_DOWN_LONG_STD;
 	}
-    return N_KEY;
+	return N_KEY;
 }
 
-static void Key_SKU_display(u8 up_or_down)
+static void Key_SKU_display ( void )
 {
- if(up_or_down == 0)
- { 
- tube_num.SKU_std++;
- if(tube_num.SKU_std > SKU_MAX)
- tube_num.SKU_std = SKU_MAX;	
- }
- else(up_or_down == 1)
- 	{
-      tube_num.SKU_std--;
-      if(tube_num.SKU_std < 1)
-      tube_num.SKU_std = 1;	   
-    }
-  switch(tube_num.SKU_std)
+		tube_num.SKU_std++;
+		if ( tube_num.SKU_std > SKU_MAX )
+		{
+			tube_num.SKU_std = 1;
+		}
+	
+	switch ( tube_num.SKU_std )
+	{
+		case K9011:
+			tube_num.bit1 = 9;
+			tube_num.bit2 = 0;
+			tube_num.bit3 = 1;
+			tube_num.bit4 = 1;
+			break;
+		case K9018:
+			tube_num.bit1 = 9;
+			tube_num.bit2 = 0;
+			tube_num.bit3 = 1;
+			tube_num.bit4 = 8;
+			break;
+		case K9019:
+			tube_num.bit1 = 9;
+			tube_num.bit2 = 0;
+			tube_num.bit3 = 1;
+			tube_num.bit4 = 9;
+
+			break;
+		case K9025:
+			tube_num.bit1 = 9;
+			tube_num.bit2 = 0;
+			tube_num.bit3 = 2;
+			tube_num.bit4 = 5;
+			break;
+		case K9029:
+			tube_num.bit1 = 9;
+			tube_num.bit2 = 0;
+			tube_num.bit3 = 2;
+			tube_num.bit4 = 9;
+			break;
+		case K8104:
+			tube_num.bit1 = 8;
+			tube_num.bit2 = 1;
+			tube_num.bit3 = 0;
+			tube_num.bit4 = 4;
+			break;
+		case K8105:
+			tube_num.bit1 = 8;
+			tube_num.bit2 = 1;
+			tube_num.bit3 = 0;
+			tube_num.bit4 = 5;
+			break;
+		case K9028:
+			tube_num.bit1 = 9;
+			tube_num.bit2 = 0;
+			tube_num.bit3 = 2;
+			tube_num.bit4 = 8;
+			break;
+		case K9014:
+			tube_num.bit1 = 9;
+			tube_num.bit2 = 0;
+			tube_num.bit3 = 1;
+			tube_num.bit4 = 4;
+			break;
+		case K9017:
+			tube_num.bit1 = 9;
+			tube_num.bit2 = 0;
+			tube_num.bit3 = 1;
+			tube_num.bit4 = 7;
+			break;
+			case K9017:
+			tube_num.bit1 = 9;
+			tube_num.bit2 = 0;
+			tube_num.bit3 = 1;
+			tube_num.bit4 = 7;
+			break;
+	}
+}
+
+static void set_ONorOFF(void)
+{
+  if(tube_num.tube_std == ON )
   	{
-     case 1:
-	 	tube_num.bit1 = 9;
-		tube_num.bit2 = 0;
-	    tube_num.bit3 = 1;
-		tube_num.bit4 = 1;
-	break;
-	case 2:
-	 	tube_num.bit1 = 9;
-		tube_num.bit2 = 0;
-	    tube_num.bit3 = 1;
-		tube_num.bit4 = 8;
-	break;
-	case 3:
-	 	tube_num.bit1 = 9;
-		tube_num.bit2 = 0;
-	    tube_num.bit3 = 1;
-		tube_num.bit4 = 9;
-		
-	break;
-	case 4:
-	 	tube_num.bit1 = 9;
-		tube_num.bit2 = 0;
-	    tube_num.bit3 = 2;
-		tube_num.bit4 = 5;
-	break;
-	case 5:
-	 	tube_num.bit1 = 9;
-		tube_num.bit2 = 0;
-	    tube_num.bit3 = 2;
-		tube_num.bit4 = 9;
-	break;
-	case 6:
-	 	tube_num.bit1 = 8;
-		tube_num.bit2 = 1;
-	    tube_num.bit3 = 0;
-		tube_num.bit4 = 4;
-	break;
-	case 7:
-	 	tube_num.bit1 = 8;
-		tube_num.bit2 = 1;
-	    tube_num.bit3 = 0;
-		tube_num.bit4 = 5;
-	break;
-	case 8:
-	 	tube_num.bit1 = 9;
-		tube_num.bit2 = 0;
-	    tube_num.bit3 = 2;
-		tube_num.bit4 = 8;
-	break;
-	case 9:
-	 	tube_num.bit1 = 9;
-		tube_num.bit2 = 0;
-	    tube_num.bit3 = 1;
-		tube_num.bit4 = 4;
-	break;
-	case 10:
-	 	tube_num.bit1 = 9;
-		tube_num.bit2 = 0;
-	    tube_num.bit3 = 1;
-		tube_num.bit4 = 7;
-	break;
+       tube_num.tube_std =  OFF;
+    }
+  else if(tube_num.tube_std == OFF)
+  	{
+       tube_num.tube_std =  ON;
     }
 }
 
-
-void key_handle(void)
+void key_handle ( void )
 {
- u8 value = 0;
- value = key_scanf ();
- switch(value)
- 	{
-      case KEY_UP_SHORT_STD:
-	  	Key_SKU_display(0);
-	  	break;
-	  case KEY_UP_LONG_STD:
-	  	break;
-	  case KEY_DOWN_SHORT_STD:
-	  	Key_SKU_display(1);
-	  	break;
-	  case KEY_DOWN_SHORT_STD:
-	  	break;
-    }
+	u8 value = 0;
+	value = key_scanf ();
+	switch ( value )
+	{
+		case KEY_UP_SHORT_STD:
+			break;
+		case KEY_UP_LONG_STD:
+			break;
+		case KEY_DOWN_SHORT_STD:
+			 Key_SKU_display ();
+			break;
+		case KEY_DOWN_LONG_STD:
+			set_ONorOFF();
+			break;
+	}
 
 }
 
