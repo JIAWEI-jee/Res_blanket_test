@@ -27,8 +27,8 @@ void ADC_Init_Config ( void )
 	P0M2 = 0x01;		//P02设置为模拟输入
 	P0M3 = 0x01;        //P03设置为模拟输入
 
-	P2M6 = 0XC1;        //设置P35推挽输出
-	P2M7 = 0XC1;        //设置P25推挽输出
+	P3M5 = 0XC1;        //设置P35推挽输出
+	P2M5 = 0XC1;        //设置P25推挽输出
 	ADCC0 = 0x81;		//打开ADC转换电源			00 VDD
 //											01 内部4V
 //											10 内部3V
@@ -101,52 +101,10 @@ static u16 get_adc_val_ch3 ( void )
 
 static void get_ADC_value_ch02ch3 ( u16* ch0_value,u16* ch1_value,u16* ch2_value,u16* ch3_value )
 {
-	RT_0 = 1;
-	RT_1 = 1;
-	delay_us ( 5000 );
-
 	*ch0_value = get_adc_val_ch0 ();
 	*ch1_value = get_adc_val_ch1 ();
 	*ch2_value = get_adc_val_ch2 ();
 	*ch3_value = get_adc_val_ch3 ();
-}
-
-static u8 get_ADC_value_EX_channl ( void ) //u16* temp_std,u16* heat_std
-{
-	u16 ch0_adc = 0,ch1_adc =0,ch2_adc =0,ch3_adc =0;
-	RT_0 = 1;
-	RT_1 = 0;
-	delay_us ( 5000 );
-	ch0_adc = get_adc_val_ch0 ();
-	KEY_printf ( "ch0_adc = %d \r\n",ch0_adc ); //pjw set
-	ch1_adc = get_adc_val_ch1 ();
-	KEY_printf ( "ch1_adc = %d \r\n",ch1_adc ); //pjw set
-	ch2_adc = get_adc_val_ch2 ();
-	KEY_printf ( "ch2_adc = %d \r\n",ch2_adc ); //pjw set
-	ch3_adc = get_adc_val_ch3 ();
-	KEY_printf ( "ch3_adc = %d \r\n",ch3_adc ); //pjw set
-	
-    if((ch2_adc > 80)&&(ch3_adc > 100))
-    	{
-         return blank_short_circuit_leakage;
-	    }
-	RT_0 = 0;
-	RT_1 = 1;
-	delay_us ( 5000 );
-	gm_printf ( "\r\n*************************************\r\n" );
-	ch0_adc = get_adc_val_ch0 ();
-	KEY_printf ( "ch0_adc = %d \r\n",ch0_adc ); //pjw set
-	ch1_adc = get_adc_val_ch1 ();
-	KEY_printf ( "ch1_adc = %d \r\n",ch1_adc ); //pjw set
-	ch2_adc = get_adc_val_ch2 ();
-	KEY_printf ( "ch2_adc = %d \r\n",ch2_adc ); //pjw set
-	ch3_adc = get_adc_val_ch3 ();
-	KEY_printf ( "ch3_adc = %d \r\n",ch3_adc ); //pjw set
-	if((ch0_adc > 80)&&(ch1_adc > 100))
-    	{
-         return blank_short_circuit_leakage;
-	    }
-	return Res_leakage_OK;
 }
 
 
@@ -192,7 +150,7 @@ u8 Cacl_Res ( u16* temper_res,u16* heat_res )
 	u16 ch0 = 0,ch1 = 0,ch2 = 0,ch3 = 0;
 	Voltg_calc ( &ch0,&ch1,&ch2,&ch3 );
 
-	ADC_printf ( "ch0 = %d ch1 = %d ch2 = %d ch3 = %d \r\n",ch0,ch1,ch2,ch3 ); //pjw set
+//	ADC_printf ( "ch0 = %d ch1 = %d ch2 = %d ch3 = %d \r\n",ch0,ch1,ch2,ch3 ); //pjw set
 	if ( ( ch1 < 90 ) || ( ch3 < 90 ) )
 	{
 		return EORROR;
@@ -212,13 +170,10 @@ u8 Cacl_Res ( u16* temper_res,u16* heat_res )
 }
 u8 SKU_Res_test ( void )
 {
-	u16 Temper_res = 0,Heat_res = 0,leakage_std = 0;
+	u16 Temper_res = 0,Heat_res = 0;
 	if ( Cacl_Res ( &Temper_res,&Heat_res ) == SUCCESS )
 	{
 		systick_2min = 0;
-		leakage_std = get_ADC_value_EX_channl ( );
-		if(leakage_std == Res_leakage_OK)
-			{
 		switch ( tube_num.SKU_std )
 		{
 			case K9011:
@@ -313,7 +268,6 @@ u8 SKU_Res_test ( void )
 				}
 				break;
 		}
-			}
 	}
 	else
 	{
@@ -361,7 +315,6 @@ void Blanket_Cacl_Process ( void )
 			systick_2min = 0;
 			tube_num.tube_std = OFF;
 		}
-		//get_ADC_value_EX_channl ( );
 	}
 
 }

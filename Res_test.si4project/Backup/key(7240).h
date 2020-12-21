@@ -3,7 +3,7 @@
 #include "HC89F303B.h"
 
 #define KEY_1 	P2_0
-#define KEY_2 	P2_5
+#define KEY_2 	P3_4
 
 #define KEY_STATE_0         0       //按键状态
 #define KEY_STATE_1         1

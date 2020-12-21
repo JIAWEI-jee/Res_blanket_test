@@ -1,4 +1,4 @@
-C51 COMPILER V9.56.0.0   ADC                                                               12/07/2020 17:39:23 PAGE 1   
+C51 COMPILER V9.56.0.0   ADC                                                               12/21/2020 12:13:23 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE ADC
@@ -38,8 +38,8 @@ line level    source
   27   1              P0M2 = 0x01;            //P02设置为模拟输入
   28   1              P0M3 = 0x01;        //P03设置为模拟输入
   29   1      
-  30   1              P3M5 = 0XC1;        //设置P35推挽输出
-  31   1              P2M5 = 0XC1;        //设置P25推挽输出
+  30   1              P2M6 = 0XC1;        //设置P35推挽输出
+  31   1              P2M7 = 0XC1;        //设置P25推挽输出
   32   1              ADCC0 = 0x81;           //打开ADC转换电源                 00 VDD
   33   1      //                                                                                      01 内部4V
   34   1      //                                                                                      10 内部3V
@@ -62,7 +62,7 @@ line level    source
   50   1      
   51   1              ADCC0 |= 0x40;                                  //启动ADC转换
   52   1              while ( ! ( ADCC0&0x20 ) );                     //等待ADC转换结束
-C51 COMPILER V9.56.0.0   ADC                                                               12/07/2020 17:39:23 PAGE 2   
+C51 COMPILER V9.56.0.0   ADC                                                               12/21/2020 12:13:23 PAGE 2   
 
   53   1              ADCC0 &=~ 0x20;                                 //清除标志位
   54   1              adc_val = ADCR;                                 //获取ADC的值
@@ -115,241 +115,295 @@ line level    source
  101          
  102          static void get_ADC_value_ch02ch3 ( u16* ch0_value,u16* ch1_value,u16* ch2_value,u16* ch3_value )
  103          {
- 104   1              *ch0_value = get_adc_val_ch0 ();
- 105   1              *ch1_value = get_adc_val_ch1 ();
- 106   1              *ch2_value = get_adc_val_ch2 ();
- 107   1              *ch3_value = get_adc_val_ch3 ();
- 108   1      }
- 109          
- 110          
- 111          static void Voltg_calc ( u16* ch0_v,u16* ch1_v,u16* ch2_v,u16* ch3_v )
- 112          {
- 113   1              u16 ch0_ad_value = 0,ch1_ad_value = 0,ch2_ad_value = 0,ch3_ad_value = 0;
- 114   1              float temp = 0;
-C51 COMPILER V9.56.0.0   ADC                                                               12/07/2020 17:39:23 PAGE 3   
+ 104   1              RT_0 = 1;
+ 105   1              RT_1 = 1;
+ 106   1              delay_us ( 5000 );
+ 107   1      
+ 108   1              *ch0_value = get_adc_val_ch0 ();
+ 109   1              *ch1_value = get_adc_val_ch1 ();
+ 110   1              *ch2_value = get_adc_val_ch2 ();
+ 111   1              *ch3_value = get_adc_val_ch3 ();
+ 112   1      }
+ 113          
+ 114          static u8 get_ADC_value_EX_channl ( void ) //u16* temp_std,u16* heat_std
+C51 COMPILER V9.56.0.0   ADC                                                               12/21/2020 12:13:23 PAGE 3   
 
- 115   1              get_ADC_value_ch02ch3 ( &ch0_ad_value,&ch1_ad_value,&ch2_ad_value,&ch3_ad_value );
- 116   1      //   ADC_printf ( "ch0_ad = %d ch1_ad = %d ch2_ad = %d ch3_ad = %d \r\n",ch0_ad_value,ch1_ad_value,ch2_ad_
+ 115          {
+ 116   1              u16 ch0_adc = 0,ch1_adc =0,ch2_adc =0,ch3_adc =0;
+ 117   1              RT_0 = 1;
+ 118   1              RT_1 = 0;
+ 119   1              delay_us ( 5000 );
+ 120   1              ch0_adc = get_adc_val_ch0 ();
+ 121   1              KEY_printf ( "ch0_adc = %d \r\n",ch0_adc ); //pjw set
+ 122   1              ch1_adc = get_adc_val_ch1 ();
+ 123   1              KEY_printf ( "ch1_adc = %d \r\n",ch1_adc ); //pjw set
+ 124   1              ch2_adc = get_adc_val_ch2 ();
+ 125   1              KEY_printf ( "ch2_adc = %d \r\n",ch2_adc ); //pjw set
+ 126   1              ch3_adc = get_adc_val_ch3 ();
+ 127   1              KEY_printf ( "ch3_adc = %d \r\n",ch3_adc ); //pjw set
+ 128   1      
+ 129   1              if ( ( ch2_adc > 80 ) && ( ch3_adc > 100 ) )
+ 130   1              {
+ 131   2                      return blank_short_circuit_leakage;
+ 132   2              }
+ 133   1              RT_0 = 0;
+ 134   1              RT_1 = 1;
+ 135   1              delay_us ( 5000 );
+ 136   1              gm_printf ( "\r\n*************************************\r\n" );
+ 137   1              ch0_adc = get_adc_val_ch0 ();
+ 138   1              KEY_printf ( "ch0_adc = %d \r\n",ch0_adc ); //pjw set
+ 139   1              ch1_adc = get_adc_val_ch1 ();
+ 140   1              KEY_printf ( "ch1_adc = %d \r\n",ch1_adc ); //pjw set
+ 141   1              ch2_adc = get_adc_val_ch2 ();
+ 142   1              KEY_printf ( "ch2_adc = %d \r\n",ch2_adc ); //pjw set
+ 143   1              ch3_adc = get_adc_val_ch3 ();
+ 144   1              KEY_printf ( "ch3_adc = %d \r\n",ch3_adc ); //pjw set
+ 145   1              if ( ( ch0_adc > 80 ) && ( ch1_adc > 100 ) )
+ 146   1              {
+ 147   2                      return blank_short_circuit_leakage;
+ 148   2              }
+ 149   1              return Res_leakage_OK;
+ 150   1      }
+ 151          
+ 152          
+ 153          static void Voltg_calc ( u16* ch0_v,u16* ch1_v,u16* ch2_v,u16* ch3_v )
+ 154          {
+ 155   1              u16 ch0_ad_value = 0,ch1_ad_value = 0,ch2_ad_value = 0,ch3_ad_value = 0;
+ 156   1              float temp = 0;
+ 157   1              get_ADC_value_ch02ch3 ( &ch0_ad_value,&ch1_ad_value,&ch2_ad_value,&ch3_ad_value );
+ 158   1      //   ADC_printf ( "ch0_ad = %d ch1_ad = %d ch2_ad = %d ch3_ad = %d \r\n",ch0_ad_value,ch1_ad_value,ch2_ad_
              -value,ch3_ad_value ); //pjw set
- 117   1      
- 118   1              temp = ( float ) ch0_ad_value/4095*ADC_CAILI;
- 119   1      //      KEY_printf ( "adv0f = %f \r\n",temp ); //pjw set
- 120   1              * ch0_v = ( u16 ) temp;
- 121   1      //      KEY_printf ( "rtemper1 = %d \r\n",*ch0_v ); //pjw set
- 122   1      
- 123   1              temp = 0;
- 124   1      
- 125   1              temp = ( float ) ch1_ad_value/4095;
- 126   1      //      KEY_printf ( "adv1_temp = %f \r\n",temp ); //pjw set
- 127   1              temp = temp*ADC_CAILI;
- 128   1              * ch1_v = ( u16 ) temp;
- 129   1      //      KEY_printf ( "rtemper2 = %d \r\n",*ch1_v ); //pjw set
- 130   1      
- 131   1              temp = 0;
- 132   1      
- 133   1              temp = ( float ) ch2_ad_value/4095*ADC_CAILI;
- 134   1      //      KEY_printf ( "adv2f = %f \r\n",temp ); //pjw set
- 135   1              * ch2_v = ( u16 ) temp;
- 136   1      //      KEY_printf ( "heat1 = %d \r\n",*ch2_v ); //pjw set
- 137   1      
- 138   1              temp = 0;
- 139   1      
- 140   1              temp = ( float ) ch3_ad_value/4095*ADC_CAILI;
- 141   1      //      KEY_printf ( "adv3f = %f \r\n",temp ); //pjw set
- 142   1              * ch3_v = ( u16 ) temp;
- 143   1      //      KEY_printf ( "heat2 = %d \r\n",*ch3_v ); //pjw set
- 144   1      
- 145   1      }
- 146          
- 147          u8 Cacl_Res ( u16* temper_res,u16* heat_res )
- 148          {
- 149   1              float temp =0,res = 0;
- 150   1              u16 ch0 = 0,ch1 = 0,ch2 = 0,ch3 = 0;
- 151   1              Voltg_calc ( &ch0,&ch1,&ch2,&ch3 );
- 152   1      
- 153   1      //      ADC_printf ( "ch0 = %d ch1 = %d ch2 = %d ch3 = %d \r\n",ch0,ch1,ch2,ch3 ); //pjw set
- 154   1              if ( ( ch1 < 90 ) || ( ch3 < 90 ) )
- 155   1              {
- 156   2                      return EORROR;
- 157   2              }
- 158   1      
- 159   1              temp = (  ( ( float ) ch0 /1000 ) - ( ( float ) ch1/1000 ) ) / ( ( ( float ) ch1/1000 ) /510 );
- 160   1              ADC_printf ( "temper_res = %f \r\n",temp ); //pjw set
- 161   1              *temper_res = ( u16 ) temp;
- 162   1      //      ADC_printf ( "temper_res = %d \r\n",* temper_res ); //pjw set
- 163   1      
- 164   1              temp = (  ( ( float ) ch2 /1000 ) - ( ( float ) ch3/1000 ) ) / ( ( ( float ) ch3/1000 ) /510 );
- 165   1              ADC_printf ( "heat_res = %f \r\n",temp ); //pjw set
- 166   1              *heat_res = ( u16 ) temp;
- 167   1      //      ADC_printf ( "heat_res = %d \r\n",* heat_res ); //pjw set
- 168   1      
- 169   1              return SUCCESS;
- 170   1      }
- 171          u8 SKU_Res_test ( void )
- 172          {
- 173   1              u16 Temper_res = 0,Heat_res = 0;
- 174   1              if ( Cacl_Res ( &Temper_res,&Heat_res ) == SUCCESS )
- 175   1              {
-C51 COMPILER V9.56.0.0   ADC                                                               12/07/2020 17:39:23 PAGE 4   
+ 159   1      
+ 160   1              temp = ( float ) ch0_ad_value/4095*ADC_CAILI;
+ 161   1      //      KEY_printf ( "adv0f = %f \r\n",temp ); //pjw set
+ 162   1              * ch0_v = ( u16 ) temp;
+ 163   1      //      KEY_printf ( "rtemper1 = %d \r\n",*ch0_v ); //pjw set
+ 164   1      
+ 165   1              temp = 0;
+ 166   1      
+ 167   1              temp = ( float ) ch1_ad_value/4095;
+ 168   1      //      KEY_printf ( "adv1_temp = %f \r\n",temp ); //pjw set
+ 169   1              temp = temp*ADC_CAILI;
+ 170   1              * ch1_v = ( u16 ) temp;
+ 171   1      //      KEY_printf ( "rtemper2 = %d \r\n",*ch1_v ); //pjw set
+ 172   1      
+ 173   1              temp = 0;
+ 174   1      
+ 175   1              temp = ( float ) ch2_ad_value/4095*ADC_CAILI;
+C51 COMPILER V9.56.0.0   ADC                                                               12/21/2020 12:13:23 PAGE 4   
 
- 176   2                      systick_2min = 0;
- 177   2                      switch ( tube_num.SKU_std )
- 178   2                      {
- 179   3                              case K9011:
- 180   3                              case K9019:
- 181   3                              case K9029:
- 182   3                              case K9014:
- 183   3                              case K9045:
- 184   3                                      if ( ( Temper_res > K9011_MIN_TEMPER ) && ( Temper_res < K9011_MAX_TEMPER ) )
- 185   3                                      {
- 186   4                                              if ( ( Heat_res >K9011_MIN_HEAT ) && ( Heat_res < K9011_MAX_HEAT ) )
- 187   4                                              {
- 188   5                                                      return Res_test_OK;
- 189   5                                              }
- 190   4                                              else
- 191   4                                              {
- 192   5                                                      return Heat_test_fail;
- 193   5                                              }
- 194   4                                      }
- 195   3                                      else
- 196   3                                      {
- 197   4                                              return Temper_test_fail;
- 198   4                                      }
- 199   3                                      break;
- 200   3                              case K9018:
- 201   3                              case K9025:
- 202   3                                      if ( ( Temper_res > K9018_MIN_TEMPER ) && ( Temper_res < K9018_MAX_TEMPER ) )
- 203   3                                      {
- 204   4                                              if ( ( Heat_res > K9018_MIN_HEAT ) && ( Heat_res < K9018_MAX_HEAT ) )
- 205   4                                              {
- 206   5                                                      return Res_test_OK;
- 207   5                                              }
- 208   4                                              else
- 209   4                                              {
- 210   5                                                      return Heat_test_fail;
- 211   5                                              }
- 212   4                                      }
- 213   3                                      else
- 214   3                                      {
- 215   4                                              return Temper_test_fail;
- 216   4                                      }
- 217   3                                      break;
- 218   3                              case K9028:
- 219   3                                      if ( ( Temper_res > K9028_MIN_TEMPER ) && ( Temper_res < K9028_MAX_TEMPER ) )
- 220   3                                      {
- 221   4                                              if ( ( Heat_res > K9028_MIN_HEAT ) && ( Heat_res < K9028_MAX_HEAT ) )
- 222   4                                              {
- 223   5                                                      return Res_test_OK;
- 224   5                                              }
- 225   4                                              else
- 226   4                                              {
- 227   5                                                      return Heat_test_fail;
- 228   5                                              }
- 229   4                                      }
- 230   3                                      else
- 231   3                                      {
- 232   4                                              return Temper_test_fail;
- 233   4                                      }
- 234   3                                      break;
- 235   3                              case K9017:
- 236   3                                      if ( ( Temper_res > K9017_MIN_HEAT ) && ( Temper_res < K9017_MAX_TEMPER ) )
- 237   3                                      {
-C51 COMPILER V9.56.0.0   ADC                                                               12/07/2020 17:39:23 PAGE 5   
+ 176   1      //      KEY_printf ( "adv2f = %f \r\n",temp ); //pjw set
+ 177   1              * ch2_v = ( u16 ) temp;
+ 178   1      //      KEY_printf ( "heat1 = %d \r\n",*ch2_v ); //pjw set
+ 179   1      
+ 180   1              temp = 0;
+ 181   1      
+ 182   1              temp = ( float ) ch3_ad_value/4095*ADC_CAILI;
+ 183   1      //      KEY_printf ( "adv3f = %f \r\n",temp ); //pjw set
+ 184   1              * ch3_v = ( u16 ) temp;
+ 185   1      //      KEY_printf ( "heat2 = %d \r\n",*ch3_v ); //pjw set
+ 186   1      
+ 187   1      }
+ 188          
+ 189          u8 Cacl_Res ( u16* temper_res,u16* heat_res )
+ 190          {
+ 191   1              float temp =0,res = 0;
+ 192   1              u16 ch0 = 0,ch1 = 0,ch2 = 0,ch3 = 0;
+ 193   1              Voltg_calc ( &ch0,&ch1,&ch2,&ch3 );
+ 194   1      
+ 195   1              ADC_printf ( "ch0 = %d ch1 = %d ch2 = %d ch3 = %d \r\n",ch0,ch1,ch2,ch3 ); //pjw set
+ 196   1              if ( ( ch1 < 90 ) || ( ch3 < 90 ) )
+ 197   1              {
+ 198   2                      return EORROR;
+ 199   2              }
+ 200   1      
+ 201   1              temp = (  ( ( float ) ch0 /1000 ) - ( ( float ) ch1/1000 ) ) / ( ( ( float ) ch1/1000 ) /510 );
+ 202   1              ADC_printf ( "temper_res = %f \r\n",temp ); //pjw set
+ 203   1              *temper_res = ( u16 ) temp;
+ 204   1      //      ADC_printf ( "temper_res = %d \r\n",* temper_res ); //pjw set
+ 205   1      
+ 206   1              temp = (  ( ( float ) ch2 /1000 ) - ( ( float ) ch3/1000 ) ) / ( ( ( float ) ch3/1000 ) /510 );
+ 207   1              ADC_printf ( "heat_res = %f \r\n",temp ); //pjw set
+ 208   1              *heat_res = ( u16 ) temp;
+ 209   1      //      ADC_printf ( "heat_res = %d \r\n",* heat_res ); //pjw set
+ 210   1      
+ 211   1              return SUCCESS;
+ 212   1      }
+ 213          u8 SKU_Res_test ( void )
+ 214          {
+ 215   1              u16 Temper_res = 0,Heat_res = 0,leakage_std = 0;
+ 216   1              if ( Cacl_Res ( &Temper_res,&Heat_res ) == SUCCESS )
+ 217   1              {
+ 218   2                      systick_2min = 0;
+ 219   2                      leakage_std = get_ADC_value_EX_channl ( );
+ 220   2                      if ( leakage_std == Res_leakage_OK )
+ 221   2                      {
+ 222   3                              switch ( tube_num.SKU_std )
+ 223   3                              {
+ 224   4                                      case K9011:
+ 225   4                                      case K9019:
+ 226   4                                      case K9029:
+ 227   4                                      case K9014:
+ 228   4                                      case K9045:
+ 229   4                                              if ( ( Temper_res > K9011_MIN_TEMPER ) && ( Temper_res < K9011_MAX_TEMPER ) )
+ 230   4                                              {
+ 231   5                                                      if ( ( Heat_res >K9011_MIN_HEAT ) && ( Heat_res < K9011_MAX_HEAT ) )
+ 232   5                                                      {
+ 233   6                                                              return Res_test_OK;
+ 234   6                                                      }
+ 235   5                                                      else
+ 236   5                                                      {
+ 237   6                                                              return Heat_test_fail;
+C51 COMPILER V9.56.0.0   ADC                                                               12/21/2020 12:13:23 PAGE 5   
 
- 238   4                                              if ( ( Heat_res > K9017_MIN_HEAT ) && ( Heat_res < K9017_MAX_HEAT ) )
- 239   4                                              {
- 240   5                                                      return Res_test_OK;
- 241   5                                              }
- 242   4                                              else
- 243   4                                              {
- 244   5                                                      return Heat_test_fail;
- 245   5                                              }
- 246   4                                      }
- 247   3                                      else
- 248   3                                      {
- 249   4                                              return Temper_test_fail;
- 250   4                                      }
- 251   3                                      break;
- 252   3                              case K8104:
- 253   3                              case K8105:
- 254   3                                      if ( ( Temper_res > K8104_MIN_HEAT ) && ( Temper_res < K8104_MAX_TEMPER ) )
- 255   3                                      {
- 256   4                                              if ( ( Heat_res > K8104_MIN_HEAT ) && ( Heat_res < K8104_MAX_HEAT ) )
- 257   4                                              {
- 258   5                                                      return Res_test_OK;
- 259   5                                              }
- 260   4                                              else
- 261   4                                              {
- 262   5                                                      return Heat_test_fail;
- 263   5                                              }
- 264   4                                      }
- 265   3                                      else
- 266   3                                      {
- 267   4                                              return Temper_test_fail;
- 268   4                                      }
- 269   3                                      break;
- 270   3                      }
- 271   2              }
- 272   1              else
- 273   1              {
- 274   2                      return No_Blanket;
- 275   2              }
- 276   1      }
- 277          
- 278          void Blanket_Cacl_Process ( void )
- 279          {
- 280   1      
- 281   1              if ( tube_num.tube_std ==  OFF )
- 282   1              {
- 283   2                      LED2 = 1;
- 284   2                      LED1 = 1;
- 285   2                      LED0 = 1;
- 286   2              }
- 287   1              else
- 288   1              {
- 289   2      
- 290   2                      switch ( SKU_Res_test () )
- 291   2                      {
- 292   3                              case Res_test_OK:
- 293   3                                      LED1 = 0;
- 294   3                                      LED0 = 1;
- 295   3                                      LED2 = 1;
- 296   3                                      beep.beep_std = BEEP_OK;
- 297   3                                      beep.beep_std_of = 1;
- 298   3                                      break;
- 299   3                              case Temper_test_fail:
-C51 COMPILER V9.56.0.0   ADC                                                               12/07/2020 17:39:23 PAGE 6   
+ 238   6                                                      }
+ 239   5                                              }
+ 240   4                                              else
+ 241   4                                              {
+ 242   5                                                      return Temper_test_fail;
+ 243   5                                              }
+ 244   4                                              break;
+ 245   4                                      case K9018:
+ 246   4                                      case K9025:
+ 247   4                                              if ( ( Temper_res > K9018_MIN_TEMPER ) && ( Temper_res < K9018_MAX_TEMPER ) )
+ 248   4                                              {
+ 249   5                                                      if ( ( Heat_res > K9018_MIN_HEAT ) && ( Heat_res < K9018_MAX_HEAT ) )
+ 250   5                                                      {
+ 251   6                                                              return Res_test_OK;
+ 252   6                                                      }
+ 253   5                                                      else
+ 254   5                                                      {
+ 255   6                                                              return Heat_test_fail;
+ 256   6                                                      }
+ 257   5                                              }
+ 258   4                                              else
+ 259   4                                              {
+ 260   5                                                      return Temper_test_fail;
+ 261   5                                              }
+ 262   4                                              break;
+ 263   4                                      case K9028:
+ 264   4                                              if ( ( Temper_res > K9028_MIN_TEMPER ) && ( Temper_res < K9028_MAX_TEMPER ) )
+ 265   4                                              {
+ 266   5                                                      if ( ( Heat_res > K9028_MIN_HEAT ) && ( Heat_res < K9028_MAX_HEAT ) )
+ 267   5                                                      {
+ 268   6                                                              return Res_test_OK;
+ 269   6                                                      }
+ 270   5                                                      else
+ 271   5                                                      {
+ 272   6                                                              return Heat_test_fail;
+ 273   6                                                      }
+ 274   5                                              }
+ 275   4                                              else
+ 276   4                                              {
+ 277   5                                                      return Temper_test_fail;
+ 278   5                                              }
+ 279   4                                              break;
+ 280   4                                      case K9017:
+ 281   4                                              if ( ( Temper_res > K9017_MIN_HEAT ) && ( Temper_res < K9017_MAX_TEMPER ) )
+ 282   4                                              {
+ 283   5                                                      if ( ( Heat_res > K9017_MIN_HEAT ) && ( Heat_res < K9017_MAX_HEAT ) )
+ 284   5                                                      {
+ 285   6                                                              return Res_test_OK;
+ 286   6                                                      }
+ 287   5                                                      else
+ 288   5                                                      {
+ 289   6                                                              return Heat_test_fail;
+ 290   6                                                      }
+ 291   5                                              }
+ 292   4                                              else
+ 293   4                                              {
+ 294   5                                                      return Temper_test_fail;
+ 295   5                                              }
+ 296   4                                              break;
+ 297   4                                      case K8104:
+ 298   4                                      case K8105:
+ 299   4                                              if ( ( Temper_res > K8104_MIN_HEAT ) && ( Temper_res < K8104_MAX_TEMPER ) )
+C51 COMPILER V9.56.0.0   ADC                                                               12/21/2020 12:13:23 PAGE 6   
 
- 300   3                              case Heat_test_fail:
- 301   3                                      LED1 = 1;
- 302   3                                      LED2 = 1;
- 303   3                                      LED0 = 0;
- 304   3                                      beep.beep_std = BEEP_ERROR;
- 305   3                                      beep.beep_std_of = 1;
- 306   3                                      break;
- 307   3                              case No_Blanket:
- 308   3                                      LED2 = !LED2;
- 309   3                                      LED1 = 1;
- 310   3                                      LED0 = 1;
- 311   3                                      break;
- 312   3                      }
- 313   2                      if ( ++systick_2min > TIME2OFF )
- 314   2                      {
- 315   3                              systick_2min = 0;
- 316   3                              tube_num.tube_std = OFF;
- 317   3                      }
- 318   2              }
- 319   1      
- 320   1      }
- 321          
- 322          
-*** WARNING C291 IN LINE 276 OF ..\Device\adc\adc.c: not every exit path returns a value
+ 300   4                                              {
+ 301   5                                                      if ( ( Heat_res > K8104_MIN_HEAT ) && ( Heat_res < K8104_MAX_HEAT ) )
+ 302   5                                                      {
+ 303   6                                                              return Res_test_OK;
+ 304   6                                                      }
+ 305   5                                                      else
+ 306   5                                                      {
+ 307   6                                                              return Heat_test_fail;
+ 308   6                                                      }
+ 309   5                                              }
+ 310   4                                              else
+ 311   4                                              {
+ 312   5                                                      return Temper_test_fail;
+ 313   5                                              }
+ 314   4                                              break;
+ 315   4                              }
+ 316   3                      }
+ 317   2                      else 
+ 318   2                              {
+ 319   3                      return blank_short_circuit_leakage;
+ 320   3                         }
+ 321   2              }
+ 322   1              else
+ 323   1              {
+ 324   2                      return No_Blanket;
+ 325   2              }
+ 326   1      }
+ 327          
+ 328          void Blanket_Cacl_Process ( void )
+ 329          {
+ 330   1      
+ 331   1              if ( tube_num.tube_std ==  OFF )
+ 332   1              {
+ 333   2                      LED2 = 1;
+ 334   2                      LED1 = 1;
+ 335   2                      LED0 = 1;
+ 336   2              }
+ 337   1              else
+ 338   1              {
+ 339   2      
+ 340   2                      switch ( SKU_Res_test () )
+ 341   2                      {
+ 342   3                              case Res_test_OK:
+ 343   3                                      LED1 = 0;
+ 344   3                                      LED0 = 1;
+ 345   3                                      LED2 = 1;
+ 346   3                                      beep.beep_std = BEEP_OK;
+ 347   3                                      beep.beep_std_of = 1;
+ 348   3                                      break;
+ 349   3                              case Temper_test_fail:
+ 350   3                              case Heat_test_fail:
+ 351   3                              case blank_short_circuit_leakage:       
+ 352   3                                      LED1 = 1;
+ 353   3                                      LED2 = 1;
+ 354   3                                      LED0 = 0;
+ 355   3                                      beep.beep_std = BEEP_ERROR;
+ 356   3                                      beep.beep_std_of = 1;
+ 357   3                                      break;
+ 358   3                              case No_Blanket:
+ 359   3                                      LED2 = !LED2;
+ 360   3                                      LED1 = 1;
+ 361   3                                      LED0 = 1;
+C51 COMPILER V9.56.0.0   ADC                                                               12/21/2020 12:13:23 PAGE 7   
+
+ 362   3                                      break;
+ 363   3                      }
+ 364   2                      if ( ++systick_2min > TIME2OFF )
+ 365   2                      {
+ 366   3                              systick_2min = 0;
+ 367   3                              tube_num.tube_std = OFF;
+ 368   3                      }
+ 369   2                      //get_ADC_value_EX_channl ( );
+ 370   2              }
+ 371   1      
+ 372   1      }
+ 373          
+ 374          
+*** WARNING C291 IN LINE 326 OF ..\Device\adc\adc.c: not every exit path returns a value
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1641    ----
-   CONSTANT SIZE    =     36    ----
-   XDATA SIZE       =      2      62
+   CODE SIZE        =   2085    ----
+   CONSTANT SIZE    =    181    ----
+   XDATA SIZE       =      2      72
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----

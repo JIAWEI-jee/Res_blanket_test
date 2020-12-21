@@ -125,11 +125,11 @@ static u8 get_ADC_value_EX_channl ( void ) //u16* temp_std,u16* heat_std
 	KEY_printf ( "ch2_adc = %d \r\n",ch2_adc ); //pjw set
 	ch3_adc = get_adc_val_ch3 ();
 	KEY_printf ( "ch3_adc = %d \r\n",ch3_adc ); //pjw set
-	
-    if((ch2_adc > 80)&&(ch3_adc > 100))
-    	{
-         return blank_short_circuit_leakage;
-	    }
+
+	if ( ( ch2_adc > 80 ) && ( ch3_adc > 100 ) )
+	{
+		return blank_short_circuit_leakage;
+	}
 	RT_0 = 0;
 	RT_1 = 1;
 	delay_us ( 5000 );
@@ -142,10 +142,10 @@ static u8 get_ADC_value_EX_channl ( void ) //u16* temp_std,u16* heat_std
 	KEY_printf ( "ch2_adc = %d \r\n",ch2_adc ); //pjw set
 	ch3_adc = get_adc_val_ch3 ();
 	KEY_printf ( "ch3_adc = %d \r\n",ch3_adc ); //pjw set
-	if((ch0_adc > 80)&&(ch1_adc > 100))
-    	{
-         return blank_short_circuit_leakage;
-	    }
+	if ( ( ch0_adc > 80 ) && ( ch1_adc > 100 ) )
+	{
+		return blank_short_circuit_leakage;
+	}
 	return Res_leakage_OK;
 }
 
@@ -217,103 +217,103 @@ u8 SKU_Res_test ( void )
 	{
 		systick_2min = 0;
 		leakage_std = get_ADC_value_EX_channl ( );
-		if(leakage_std == Res_leakage_OK)
-			{
-		switch ( tube_num.SKU_std )
+		if ( leakage_std == Res_leakage_OK )
 		{
-			case K9011:
-			case K9019:
-			case K9029:
-			case K9014:
-			case K9045:
-				if ( ( Temper_res > K9011_MIN_TEMPER ) && ( Temper_res < K9011_MAX_TEMPER ) )
-				{
-					if ( ( Heat_res >K9011_MIN_HEAT ) && ( Heat_res < K9011_MAX_HEAT ) )
+			switch ( tube_num.SKU_std )
+			{
+				case K9011:
+				case K9019:
+				case K9029:
+				case K9014:
+				case K9045:
+					if ( ( Temper_res > K9011_MIN_TEMPER ) && ( Temper_res < K9011_MAX_TEMPER ) )
 					{
-						return Res_test_OK;
+						if ( ( Heat_res >K9011_MIN_HEAT ) && ( Heat_res < K9011_MAX_HEAT ) )
+						{
+							return Res_test_OK;
+						}
+						else
+						{
+							return Heat_test_fail;
+						}
 					}
 					else
 					{
-						return Heat_test_fail;
+						return Temper_test_fail;
 					}
-				}
-				else
-				{
-					return Temper_test_fail;
-				}
-				break;
-			case K9018:
-			case K9025:
-				if ( ( Temper_res > K9018_MIN_TEMPER ) && ( Temper_res < K9018_MAX_TEMPER ) )
-				{
-					if ( ( Heat_res > K9018_MIN_HEAT ) && ( Heat_res < K9018_MAX_HEAT ) )
+					break;
+				case K9018:
+				case K9025:
+					if ( ( Temper_res > K9018_MIN_TEMPER ) && ( Temper_res < K9018_MAX_TEMPER ) )
 					{
-						return Res_test_OK;
+						if ( ( Heat_res > K9018_MIN_HEAT ) && ( Heat_res < K9018_MAX_HEAT ) )
+						{
+							return Res_test_OK;
+						}
+						else
+						{
+							return Heat_test_fail;
+						}
 					}
 					else
 					{
-						return Heat_test_fail;
+						return Temper_test_fail;
 					}
-				}
-				else
-				{
-					return Temper_test_fail;
-				}
-				break;
-			case K9028:
-				if ( ( Temper_res > K9028_MIN_TEMPER ) && ( Temper_res < K9028_MAX_TEMPER ) )
-				{
-					if ( ( Heat_res > K9028_MIN_HEAT ) && ( Heat_res < K9028_MAX_HEAT ) )
+					break;
+				case K9028:
+					if ( ( Temper_res > K9028_MIN_TEMPER ) && ( Temper_res < K9028_MAX_TEMPER ) )
 					{
-						return Res_test_OK;
+						if ( ( Heat_res > K9028_MIN_HEAT ) && ( Heat_res < K9028_MAX_HEAT ) )
+						{
+							return Res_test_OK;
+						}
+						else
+						{
+							return Heat_test_fail;
+						}
 					}
 					else
 					{
-						return Heat_test_fail;
+						return Temper_test_fail;
 					}
-				}
-				else
-				{
-					return Temper_test_fail;
-				}
-				break;
-			case K9017:
-				if ( ( Temper_res > K9017_MIN_HEAT ) && ( Temper_res < K9017_MAX_TEMPER ) )
-				{
-					if ( ( Heat_res > K9017_MIN_HEAT ) && ( Heat_res < K9017_MAX_HEAT ) )
+					break;
+				case K9017:
+					if ( ( Temper_res > K9017_MIN_HEAT ) && ( Temper_res < K9017_MAX_TEMPER ) )
 					{
-						return Res_test_OK;
+						if ( ( Heat_res > K9017_MIN_HEAT ) && ( Heat_res < K9017_MAX_HEAT ) )
+						{
+							return Res_test_OK;
+						}
+						else
+						{
+							return Heat_test_fail;
+						}
 					}
 					else
 					{
-						return Heat_test_fail;
+						return Temper_test_fail;
 					}
-				}
-				else
-				{
-					return Temper_test_fail;
-				}
-				break;
-			case K8104:
-			case K8105:
-				if ( ( Temper_res > K8104_MIN_HEAT ) && ( Temper_res < K8104_MAX_TEMPER ) )
-				{
-					if ( ( Heat_res > K8104_MIN_HEAT ) && ( Heat_res < K8104_MAX_HEAT ) )
+					break;
+				case K8104:
+				case K8105:
+					if ( ( Temper_res > K8104_MIN_HEAT ) && ( Temper_res < K8104_MAX_TEMPER ) )
 					{
-						return Res_test_OK;
+						if ( ( Heat_res > K8104_MIN_HEAT ) && ( Heat_res < K8104_MAX_HEAT ) )
+						{
+							return Res_test_OK;
+						}
+						else
+						{
+							return Heat_test_fail;
+						}
 					}
 					else
 					{
-						return Heat_test_fail;
+						return Temper_test_fail;
 					}
-				}
-				else
-				{
-					return Temper_test_fail;
-				}
-				break;
-		}
+					break;
 			}
+		}
 	}
 	else
 	{

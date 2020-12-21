@@ -12,22 +12,22 @@ typedef enum
 	K9011_MAX_TEMPER = 690,
 	K9011_MIN_TEMPER = 600,
 	K9011_MAX_HEAT = 135,
-	K9011_MIN_HEAT = 130,        // 公差10cm
+	K9011_MIN_HEAT = 132,        // 公差10cm
 
 	K9018_MAX_TEMPER = 550,
 	K9018_MIN_TEMPER = 450,
 	K9018_MAX_HEAT = 294,
-	K9018_MIN_HEAT = 280,      // 公差10cm
+	K9018_MIN_HEAT = 282,      // 公差10cm
 
 	K9028_MAX_TEMPER = 440,
 	K9028_MIN_TEMPER = 380,
 	K9028_MAX_HEAT = 86,
-	K9028_MIN_HEAT = 79,      // 公差10cm
+	K9028_MIN_HEAT = 81,      // 公差10cm
 
 	K9017_MAX_TEMPER = 320,
 	K9017_MIN_TEMPER = 280,
 	K9017_MAX_HEAT = 185,
-	K9017_MIN_HEAT = 158,    // 公差10cm
+	K9017_MIN_HEAT = 160,    // 公差10cm
 
 	K8104_MAX_TEMPER = 96,
 	K8104_MIN_TEMPER = 81,
@@ -40,15 +40,13 @@ typedef enum
 typedef enum
 {
 	Res_test_OK = 0,
-	Res_leakage_OK,
 	Temper_test_fail,
 	Heat_test_fail,
-	No_Blanket,
-	blank_short_circuit_leakage
+	No_Blanket
 } Test_Std;
 
-#define RT_0  P2_6
-#define RT_1  P2_7
+#define RT_0  P3_5
+#define RT_1  P2_5
 
 #define ADC_CAILI  4000
 #define TIME2OFF   120

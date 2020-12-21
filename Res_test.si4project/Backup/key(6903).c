@@ -7,7 +7,7 @@
 void Key_Init_Config ( void )
 {
 	//P3M5 = 0x61;                        //P35上拉输入
-	P2M5 = 0x61;                        //P25上拉输入
+	P3M4 = 0x61;                        //P25上拉输入
 }
 
 static unsigned char KEY_UP_Driver ( void )

@@ -27,8 +27,8 @@ void ADC_Init_Config ( void )
 	P0M2 = 0x01;		//P02设置为模拟输入
 	P0M3 = 0x01;        //P03设置为模拟输入
 
-	P3M5 = 0XC1;        //设置P35推挽输出
-	P2M5 = 0XC1;        //设置P25推挽输出
+	P2M6 = 0XC1;        //设置P35推挽输出
+	P2M7 = 0XC1;        //设置P25推挽输出
 	ADCC0 = 0x81;		//打开ADC转换电源			00 VDD
 //											01 内部4V
 //											10 内部3V
@@ -101,10 +101,52 @@ static u16 get_adc_val_ch3 ( void )
 
 static void get_ADC_value_ch02ch3 ( u16* ch0_value,u16* ch1_value,u16* ch2_value,u16* ch3_value )
 {
+	RT_0 = 1;
+	RT_1 = 1;
+	delay_us ( 5000 );
+
 	*ch0_value = get_adc_val_ch0 ();
 	*ch1_value = get_adc_val_ch1 ();
 	*ch2_value = get_adc_val_ch2 ();
 	*ch3_value = get_adc_val_ch3 ();
+}
+
+static u8 get_ADC_value_EX_channl ( void ) //u16* temp_std,u16* heat_std
+{
+	u16 ch0_adc = 0,ch1_adc =0,ch2_adc =0,ch3_adc =0;
+	RT_0 = 1;
+	RT_1 = 0;
+	delay_us ( 5000 );
+	ch0_adc = get_adc_val_ch0 ();
+	KEY_printf ( "ch0_adc = %d \r\n",ch0_adc ); //pjw set
+	ch1_adc = get_adc_val_ch1 ();
+	KEY_printf ( "ch1_adc = %d \r\n",ch1_adc ); //pjw set
+	ch2_adc = get_adc_val_ch2 ();
+	KEY_printf ( "ch2_adc = %d \r\n",ch2_adc ); //pjw set
+	ch3_adc = get_adc_val_ch3 ();
+	KEY_printf ( "ch3_adc = %d \r\n",ch3_adc ); //pjw set
+
+	if ( ( ch2_adc > 80 ) && ( ch3_adc > 100 ) )
+	{
+		return blank_short_circuit_leakage;
+	}
+	RT_0 = 0;
+	RT_1 = 1;
+	delay_us ( 5000 );
+	gm_printf ( "\r\n*************************************\r\n" );
+	ch0_adc = get_adc_val_ch0 ();
+	KEY_printf ( "ch0_adc = %d \r\n",ch0_adc ); //pjw set
+	ch1_adc = get_adc_val_ch1 ();
+	KEY_printf ( "ch1_adc = %d \r\n",ch1_adc ); //pjw set
+	ch2_adc = get_adc_val_ch2 ();
+	KEY_printf ( "ch2_adc = %d \r\n",ch2_adc ); //pjw set
+	ch3_adc = get_adc_val_ch3 ();
+	KEY_printf ( "ch3_adc = %d \r\n",ch3_adc ); //pjw set
+	if ( ( ch0_adc > 80 ) && ( ch1_adc > 100 ) )
+	{
+		return blank_short_circuit_leakage;
+	}
+	return Res_leakage_OK;
 }
 
 
@@ -150,7 +192,7 @@ u8 Cacl_Res ( u16* temper_res,u16* heat_res )
 	u16 ch0 = 0,ch1 = 0,ch2 = 0,ch3 = 0;
 	Voltg_calc ( &ch0,&ch1,&ch2,&ch3 );
 
-//	ADC_printf ( "ch0 = %d ch1 = %d ch2 = %d ch3 = %d \r\n",ch0,ch1,ch2,ch3 ); //pjw set
+	ADC_printf ( "ch0 = %d ch1 = %d ch2 = %d ch3 = %d \r\n",ch0,ch1,ch2,ch3 ); //pjw set
 	if ( ( ch1 < 90 ) || ( ch3 < 90 ) )
 	{
 		return EORROR;
@@ -170,104 +212,112 @@ u8 Cacl_Res ( u16* temper_res,u16* heat_res )
 }
 u8 SKU_Res_test ( void )
 {
-	u16 Temper_res = 0,Heat_res = 0;
+	u16 Temper_res = 0,Heat_res = 0,leakage_std = 0;
 	if ( Cacl_Res ( &Temper_res,&Heat_res ) == SUCCESS )
 	{
 		systick_2min = 0;
-		switch ( tube_num.SKU_std )
+		leakage_std = get_ADC_value_EX_channl ( );
+		if ( leakage_std == Res_leakage_OK )
 		{
-			case K9011:
-			case K9019:
-			case K9029:
-			case K9014:
-			case K9045:
-				if ( ( Temper_res > K9011_MIN_TEMPER ) && ( Temper_res < K9011_MAX_TEMPER ) )
-				{
-					if ( ( Heat_res >K9011_MIN_HEAT ) && ( Heat_res < K9011_MAX_HEAT ) )
+			switch ( tube_num.SKU_std )
+			{
+				case K9011:
+				case K9019:
+				case K9029:
+				case K9014:
+				case K9045:
+					if ( ( Temper_res > K9011_MIN_TEMPER ) && ( Temper_res < K9011_MAX_TEMPER ) )
 					{
-						return Res_test_OK;
+						if ( ( Heat_res >K9011_MIN_HEAT ) && ( Heat_res < K9011_MAX_HEAT ) )
+						{
+							return Res_test_OK;
+						}
+						else
+						{
+							return Heat_test_fail;
+						}
 					}
 					else
 					{
-						return Heat_test_fail;
+						return Temper_test_fail;
 					}
-				}
-				else
-				{
-					return Temper_test_fail;
-				}
-				break;
-			case K9018:
-			case K9025:
-				if ( ( Temper_res > K9018_MIN_TEMPER ) && ( Temper_res < K9018_MAX_TEMPER ) )
-				{
-					if ( ( Heat_res > K9018_MIN_HEAT ) && ( Heat_res < K9018_MAX_HEAT ) )
+					break;
+				case K9018:
+				case K9025:
+					if ( ( Temper_res > K9018_MIN_TEMPER ) && ( Temper_res < K9018_MAX_TEMPER ) )
 					{
-						return Res_test_OK;
+						if ( ( Heat_res > K9018_MIN_HEAT ) && ( Heat_res < K9018_MAX_HEAT ) )
+						{
+							return Res_test_OK;
+						}
+						else
+						{
+							return Heat_test_fail;
+						}
 					}
 					else
 					{
-						return Heat_test_fail;
+						return Temper_test_fail;
 					}
-				}
-				else
-				{
-					return Temper_test_fail;
-				}
-				break;
-			case K9028:
-				if ( ( Temper_res > K9028_MIN_TEMPER ) && ( Temper_res < K9028_MAX_TEMPER ) )
-				{
-					if ( ( Heat_res > K9028_MIN_HEAT ) && ( Heat_res < K9028_MAX_HEAT ) )
+					break;
+				case K9028:
+					if ( ( Temper_res > K9028_MIN_TEMPER ) && ( Temper_res < K9028_MAX_TEMPER ) )
 					{
-						return Res_test_OK;
+						if ( ( Heat_res > K9028_MIN_HEAT ) && ( Heat_res < K9028_MAX_HEAT ) )
+						{
+							return Res_test_OK;
+						}
+						else
+						{
+							return Heat_test_fail;
+						}
 					}
 					else
 					{
-						return Heat_test_fail;
+						return Temper_test_fail;
 					}
-				}
-				else
-				{
-					return Temper_test_fail;
-				}
-				break;
-			case K9017:
-				if ( ( Temper_res > K9017_MIN_HEAT ) && ( Temper_res < K9017_MAX_TEMPER ) )
-				{
-					if ( ( Heat_res > K9017_MIN_HEAT ) && ( Heat_res < K9017_MAX_HEAT ) )
+					break;
+				case K9017:
+					if ( ( Temper_res > K9017_MIN_HEAT ) && ( Temper_res < K9017_MAX_TEMPER ) )
 					{
-						return Res_test_OK;
+						if ( ( Heat_res > K9017_MIN_HEAT ) && ( Heat_res < K9017_MAX_HEAT ) )
+						{
+							return Res_test_OK;
+						}
+						else
+						{
+							return Heat_test_fail;
+						}
 					}
 					else
 					{
-						return Heat_test_fail;
+						return Temper_test_fail;
 					}
-				}
-				else
-				{
-					return Temper_test_fail;
-				}
-				break;
-			case K8104:
-			case K8105:
-				if ( ( Temper_res > K8104_MIN_HEAT ) && ( Temper_res < K8104_MAX_TEMPER ) )
-				{
-					if ( ( Heat_res > K8104_MIN_HEAT ) && ( Heat_res < K8104_MAX_HEAT ) )
+					break;
+				case K8104:
+				case K8105:
+					if ( ( Temper_res > K8104_MIN_HEAT ) && ( Temper_res < K8104_MAX_TEMPER ) )
 					{
-						return Res_test_OK;
+						if ( ( Heat_res > K8104_MIN_HEAT ) && ( Heat_res < K8104_MAX_HEAT ) )
+						{
+							return Res_test_OK;
+						}
+						else
+						{
+							return Heat_test_fail;
+						}
 					}
 					else
 					{
-						return Heat_test_fail;
+						return Temper_test_fail;
 					}
-				}
-				else
-				{
-					return Temper_test_fail;
-				}
-				break;
+					break;
+			}
 		}
+		else 
+			{
+                return blank_short_circuit_leakage;
+		   }
 	}
 	else
 	{
@@ -298,6 +348,7 @@ void Blanket_Cacl_Process ( void )
 				break;
 			case Temper_test_fail:
 			case Heat_test_fail:
+			case blank_short_circuit_leakage:	
 				LED1 = 1;
 				LED2 = 1;
 				LED0 = 0;
@@ -315,6 +366,7 @@ void Blanket_Cacl_Process ( void )
 			systick_2min = 0;
 			tube_num.tube_std = OFF;
 		}
+		//get_ADC_value_EX_channl ( );
 	}
 
 }
