@@ -1,5 +1,4 @@
----- systick_2min Matches (4 in 1 files) ----
-adc.c (Device\adc) line 11 : u16 systick_2min = 0;
-SKU_Res_test in adc.c (Device\adc) : 		systick_2min = 0;
-Blanket_Cacl_Process in adc.c (Device\adc) : 		if ( ++systick_2min > TIME2OFF )
-Blanket_Cacl_Process in adc.c (Device\adc) : 			systick_2min = 0;
+---- Blanket_Cacl_Process Matches (3 in 3 files) ----
+adc.c (Device\adc) line 319 : void Blanket_Cacl_Process ( void )
+adc.h (Device\adc) line 56 : void Blanket_Cacl_Process ( void );
+main in main.c (user) : 				Blanket_Cacl_Process( );

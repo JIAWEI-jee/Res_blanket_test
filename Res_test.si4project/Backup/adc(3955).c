@@ -6,7 +6,7 @@
 #include "Beep.h"
 
 
-
+//const u16 SKU_RES_Table = [];
 
 u16 systick_2min = 0;
 
@@ -64,14 +64,13 @@ static u8 get_ADC_value_chRL ( u16* u_RL )
 //  KEY_printf ( "chRL_adc = %f \r\n",temp ); //pjw set
 	if ( temp > 4090 )
 	{
-	//	return EORROR;
+		return EORROR;
 	}
 	temp = ( float ) ( temp/4095*ADC_CAILI );
 	temp = temp/1000;
 	temp = temp/0.124;
 	KEY_printf ( "chRL_r = %f \r\n",temp ); //pjw set
 	*u_RL = ( u16 ) temp;
-	KEY_printf ( "chRL_r_d = %d \r\n",*u_RL ); //pjw set
 	if ( temp >= 32 )
 	{
 		return EORROR;
@@ -145,22 +144,6 @@ static void get_ADC_value_ch02ch3 ( u16* ch0_value,u16* ch1_value,u16* ch2_value
 }
 
 
-static void get_ADC_value_EX_channl(u16 *temp_std,u16 *heat_std)
-{
-   u16 ch0_adc = 0,ch1_adc =0,ch2_adc =0,ch3_adc =0;
-	RT_0 = 1;
-	RT_1 = 0;
-	delay_us ( 5000 );
-   ch0_adc = get_adc_val_ch0 ();
-   KEY_printf ( "rtemper1 = %d \r\n",ch0_adc); //pjw set
-     ch1_adc = get_adc_val_ch1 ();
-   KEY_printf ( "rtemper1 = %d \r\n",ch0_adc); //pjw set
-     ch2_adc = get_adc_val_ch2 ();
-   KEY_printf ( "rtemper1 = %d \r\n",ch0_adc); //pjw set
-     ch3_adc = get_adc_val_ch3 ();
-   KEY_printf ( "rtemper1 = %d \r\n",ch0_adc); //pjw set
-
-}
 static void Voltg_calc ( u16* ch0_v,u16* ch1_v,u16* ch2_v,u16* ch3_v )
 {
 	u16 ch0_ad_value = 0,ch1_ad_value = 0,ch2_ad_value = 0,ch3_ad_value = 0;
@@ -223,8 +206,8 @@ u8 Cacl_Res ( u16* temper_res,u16* heat_res )
 }
 u8 SKU_Res_test ( void )
 {
-	u16 Temper_res = 0,Heat_res = 0,RL_res = 0;
-	if ( (Cacl_Res ( &Temper_res,&Heat_res ) == SUCCESS)||(get_ADC_value_chRL ( &RL_res ) == SUCCESS))
+	u16 Temper_res = 0,Heat_res = 0;
+	if ( Cacl_Res ( &Temper_res,&Heat_res ) == SUCCESS )
 	{
 		systick_2min = 0;
 		switch ( tube_num.SKU_std )
@@ -304,11 +287,16 @@ u8 SKU_Res_test ( void )
 				break;
 			case K8104:
 			case K8105:
-				if ( ( RL_res > K8104_MIN_HEAT ) && ( RL_res < K8104_MAX_HEAT ) )
+				if ( ( Temper_res > K8104_MIN_HEAT ) && ( Temper_res < K8104_MAX_TEMPER ) )
 				{
-		
-					return Res_test_OK;
-					
+					if ( ( Heat_res > K8104_MIN_HEAT ) && ( Heat_res < K8104_MAX_HEAT ) )
+					{
+						return Res_test_OK;
+					}
+					else
+					{
+						return Heat_test_fail;
+					}
 				}
 				else
 				{
@@ -321,12 +309,11 @@ u8 SKU_Res_test ( void )
 	{
 		return No_Blanket;
 	}
-    
 }
 
 void Blanket_Cacl_Process ( void )
 {
-	
+	get_ADC_value_chRL();
 
 	if ( tube_num.tube_std ==  OFF )
 	{

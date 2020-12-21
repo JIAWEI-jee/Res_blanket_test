@@ -64,7 +64,7 @@ static u8 get_ADC_value_chRL ( u16* u_RL )
 //  KEY_printf ( "chRL_adc = %f \r\n",temp ); //pjw set
 	if ( temp > 4090 )
 	{
-	//	return EORROR;
+		//	return EORROR;
 	}
 	temp = ( float ) ( temp/4095*ADC_CAILI );
 	temp = temp/1000;
@@ -145,20 +145,20 @@ static void get_ADC_value_ch02ch3 ( u16* ch0_value,u16* ch1_value,u16* ch2_value
 }
 
 
-static void get_ADC_value_EX_channl(u16 *temp_std,u16 *heat_std)
+static void get_ADC_value_EX_channl ( u16* temp_std,u16* heat_std )
 {
-   u16 ch0_adc = 0,ch1_adc =0,ch2_adc =0,ch3_adc =0;
+	u16 ch0_adc = 0,ch1_adc =0,ch2_adc =0,ch3_adc =0;
 	RT_0 = 1;
 	RT_1 = 0;
 	delay_us ( 5000 );
-   ch0_adc = get_adc_val_ch0 ();
-   KEY_printf ( "rtemper1 = %d \r\n",ch0_adc); //pjw set
-     ch1_adc = get_adc_val_ch1 ();
-   KEY_printf ( "rtemper1 = %d \r\n",ch0_adc); //pjw set
-     ch2_adc = get_adc_val_ch2 ();
-   KEY_printf ( "rtemper1 = %d \r\n",ch0_adc); //pjw set
-     ch3_adc = get_adc_val_ch3 ();
-   KEY_printf ( "rtemper1 = %d \r\n",ch0_adc); //pjw set
+	ch0_adc = get_adc_val_ch0 ();
+	KEY_printf ( "rtemper1 = %d \r\n",ch0_adc ); //pjw set
+	ch1_adc = get_adc_val_ch1 ();
+	KEY_printf ( "rtemper1 = %d \r\n",ch0_adc ); //pjw set
+	ch2_adc = get_adc_val_ch2 ();
+	KEY_printf ( "rtemper1 = %d \r\n",ch0_adc ); //pjw set
+	ch3_adc = get_adc_val_ch3 ();
+	KEY_printf ( "rtemper1 = %d \r\n",ch0_adc ); //pjw set
 
 }
 static void Voltg_calc ( u16* ch0_v,u16* ch1_v,u16* ch2_v,u16* ch3_v )
@@ -224,7 +224,7 @@ u8 Cacl_Res ( u16* temper_res,u16* heat_res )
 u8 SKU_Res_test ( void )
 {
 	u16 Temper_res = 0,Heat_res = 0,RL_res = 0;
-	if ( (Cacl_Res ( &Temper_res,&Heat_res ) == SUCCESS)||(get_ADC_value_chRL ( &RL_res ) == SUCCESS))
+	if ( ( Cacl_Res ( &Temper_res,&Heat_res ) == SUCCESS ) || ( get_ADC_value_chRL ( &RL_res ) == SUCCESS ) )
 	{
 		systick_2min = 0;
 		switch ( tube_num.SKU_std )
@@ -306,9 +306,9 @@ u8 SKU_Res_test ( void )
 			case K8105:
 				if ( ( RL_res > K8104_MIN_HEAT ) && ( RL_res < K8104_MAX_HEAT ) )
 				{
-		
+
 					return Res_test_OK;
-					
+
 				}
 				else
 				{
@@ -321,12 +321,12 @@ u8 SKU_Res_test ( void )
 	{
 		return No_Blanket;
 	}
-    
+
 }
 
 void Blanket_Cacl_Process ( void )
 {
-	
+
 
 	if ( tube_num.tube_std ==  OFF )
 	{

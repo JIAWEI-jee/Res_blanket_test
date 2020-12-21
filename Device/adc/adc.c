@@ -6,7 +6,7 @@
 #include "Beep.h"
 
 
-//const u16 SKU_RES_Table = [];
+
 
 u16 systick_2min = 0;
 
@@ -26,6 +26,7 @@ void ADC_Init_Config ( void )
 	P0M1 = 0x01;        //P01设置为模拟输入
 	P0M2 = 0x01;		//P02设置为模拟输入
 	P0M3 = 0x01;        //P03设置为模拟输入
+	P2M7 = 0x01;        //P27设置为模拟输入
 
 	P3M5 = 0XC1;        //设置P35推挽输出
 	P2M5 = 0XC1;        //设置P25推挽输出
@@ -41,6 +42,42 @@ void ADC_Init_Config ( void )
 	ADCC2 = 0x4B;						//转换结果12位数据，数据右对齐，ADC时钟16分频 16M/16 = 1MHz
 	RT_0 = 1;
 	RT_1 = 1;
+}
+
+static u16 get_adc_val_chRL ( void )
+{
+	u16 adc_val = 0;
+	ADCC1 = 0x0f;                   //CH15
+
+	ADCC0 |= 0x40;					//启动ADC转换
+	while ( ! ( ADCC0&0x20 ) );			//等待ADC转换结束
+	ADCC0 &=~ 0x20;					//清除标志位
+	adc_val = ADCR;					//获取ADC的值
+	delay_us ( 20 );
+	return adc_val;
+}
+
+static u8 get_ADC_value_chRL ( u16* u_RL )
+{
+	float temp = 0;
+	temp = ( float ) get_adc_val_chRL ( );
+//  KEY_printf ( "chRL_adc = %f \r\n",temp ); //pjw set
+	if ( temp > 4090 )
+	{
+		//	return EORROR;
+	}
+	temp = ( float ) ( temp/4095*ADC_CAILI );
+	temp = temp/1000;
+	temp = temp/0.124;
+	KEY_printf ( "chRL_r = %f \r\n",temp ); //pjw set
+	*u_RL = ( u16 ) temp;
+	KEY_printf ( "chRL_r_d = %d \r\n",*u_RL ); //pjw set
+	if ( temp >= 32 )
+	{
+		return EORROR;
+	}
+
+	return SUCCESS;
 }
 
 static u16 get_adc_val_ch0 ( void )
@@ -101,6 +138,9 @@ static u16 get_adc_val_ch3 ( void )
 
 static void get_ADC_value_ch02ch3 ( u16* ch0_value,u16* ch1_value,u16* ch2_value,u16* ch3_value )
 {
+     RT_0 = 1;
+	RT_1 = 1;
+	delay_us ( 5000 );
 	*ch0_value = get_adc_val_ch0 ();
 	*ch1_value = get_adc_val_ch1 ();
 	*ch2_value = get_adc_val_ch2 ();
@@ -108,6 +148,35 @@ static void get_ADC_value_ch02ch3 ( u16* ch0_value,u16* ch1_value,u16* ch2_value
 }
 
 
+static void get_ADC_value_EX_channl ( void )//u16* temp_std,u16* heat_std
+{
+	u16 ch0_adc = 0,ch1_adc =0,ch2_adc =0,ch3_adc =0;
+	RT_0 = 1;
+	RT_1 = 0;
+	delay_us ( 5000 );
+	ch0_adc = get_adc_val_ch0 ();
+	KEY_printf ( "ch0_adc = %d \r\n",ch0_adc ); //pjw set
+	ch1_adc = get_adc_val_ch1 ();
+	KEY_printf ( "ch1_adc = %d \r\n",ch1_adc ); //pjw set
+	ch2_adc = get_adc_val_ch2 ();
+	KEY_printf ( "ch2_adc = %d \r\n",ch2_adc ); //pjw set
+	ch3_adc = get_adc_val_ch3 ();
+	KEY_printf ( "ch3_adc = %d \r\n",ch3_adc ); //pjw set
+
+    RT_0 = 0;
+	RT_1 = 1;
+	delay_us ( 5000 );
+	gm_printf ( "\r\n*************************************\r\n" );
+	ch0_adc = get_adc_val_ch0 ();
+	KEY_printf ( "ch0_adc = %d \r\n",ch0_adc ); //pjw set
+	ch1_adc = get_adc_val_ch1 ();
+	KEY_printf ( "ch1_adc = %d \r\n",ch1_adc ); //pjw set
+	ch2_adc = get_adc_val_ch2 ();
+	KEY_printf ( "ch2_adc = %d \r\n",ch2_adc ); //pjw set
+	ch3_adc = get_adc_val_ch3 ();
+	KEY_printf ( "ch3_adc = %d \r\n",ch3_adc ); //pjw set
+	gm_printf ( "\r\n==================================\r\n" );
+}
 static void Voltg_calc ( u16* ch0_v,u16* ch1_v,u16* ch2_v,u16* ch3_v )
 {
 	u16 ch0_ad_value = 0,ch1_ad_value = 0,ch2_ad_value = 0,ch3_ad_value = 0;
@@ -170,8 +239,8 @@ u8 Cacl_Res ( u16* temper_res,u16* heat_res )
 }
 u8 SKU_Res_test ( void )
 {
-	u16 Temper_res = 0,Heat_res = 0;
-	if ( Cacl_Res ( &Temper_res,&Heat_res ) == SUCCESS )
+	u16 Temper_res = 0,Heat_res = 0,RL_res = 0;
+	if ( ( Cacl_Res ( &Temper_res,&Heat_res ) == SUCCESS ) || ( get_ADC_value_chRL ( &RL_res ) == SUCCESS ) )
 	{
 		systick_2min = 0;
 		switch ( tube_num.SKU_std )
@@ -251,16 +320,11 @@ u8 SKU_Res_test ( void )
 				break;
 			case K8104:
 			case K8105:
-				if ( ( Temper_res > K8104_MIN_HEAT ) && ( Temper_res < K8104_MAX_TEMPER ) )
+				if ( ( RL_res > K8104_MIN_HEAT ) && ( RL_res < K8104_MAX_HEAT ) )
 				{
-					if ( ( Heat_res > K8104_MIN_HEAT ) && ( Heat_res < K8104_MAX_HEAT ) )
-					{
-						return Res_test_OK;
-					}
-					else
-					{
-						return Heat_test_fail;
-					}
+
+					return Res_test_OK;
+
 				}
 				else
 				{
@@ -273,10 +337,12 @@ u8 SKU_Res_test ( void )
 	{
 		return No_Blanket;
 	}
+
 }
 
 void Blanket_Cacl_Process ( void )
 {
+
 
 	if ( tube_num.tube_std ==  OFF )
 	{
@@ -286,7 +352,7 @@ void Blanket_Cacl_Process ( void )
 	}
 	else
 	{
-
+       
 		switch ( SKU_Res_test () )
 		{
 			case Res_test_OK:
@@ -316,7 +382,7 @@ void Blanket_Cacl_Process ( void )
 			tube_num.tube_std = OFF;
 		}
 	}
-
+   get_ADC_value_EX_channl ( );
 }
 
 

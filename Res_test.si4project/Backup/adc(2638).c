@@ -145,22 +145,6 @@ static void get_ADC_value_ch02ch3 ( u16* ch0_value,u16* ch1_value,u16* ch2_value
 }
 
 
-static void get_ADC_value_EX_channl(u16 *temp_std,u16 *heat_std)
-{
-   u16 ch0_adc = 0,ch1_adc =0,ch2_adc =0,ch3_adc =0;
-	RT_0 = 1;
-	RT_1 = 0;
-	delay_us ( 5000 );
-   ch0_adc = get_adc_val_ch0 ();
-   KEY_printf ( "rtemper1 = %d \r\n",ch0_adc); //pjw set
-     ch1_adc = get_adc_val_ch1 ();
-   KEY_printf ( "rtemper1 = %d \r\n",ch0_adc); //pjw set
-     ch2_adc = get_adc_val_ch2 ();
-   KEY_printf ( "rtemper1 = %d \r\n",ch0_adc); //pjw set
-     ch3_adc = get_adc_val_ch3 ();
-   KEY_printf ( "rtemper1 = %d \r\n",ch0_adc); //pjw set
-
-}
 static void Voltg_calc ( u16* ch0_v,u16* ch1_v,u16* ch2_v,u16* ch3_v )
 {
 	u16 ch0_ad_value = 0,ch1_ad_value = 0,ch2_ad_value = 0,ch3_ad_value = 0;

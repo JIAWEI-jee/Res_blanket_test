@@ -1,6 +1,7 @@
 #include "timer.h"
 #include "system_digital_tube.h"
 #include "Beep.h"
+#include "key.h"
 
 u8 systick_10ms = 0;
 u16 systick_2ms = 0;
