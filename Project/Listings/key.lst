@@ -1,4 +1,4 @@
-C51 COMPILER V9.56.0.0   KEY                                                               12/21/2020 12:13:23 PAGE 1   
+C51 COMPILER V9.56.0.0   KEY                                                               01/23/2021 10:30:08 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE KEY
@@ -62,7 +62,7 @@ line level    source
   51   3                                      key_state = KEY_STATE_0;
   52   3                              }
   53   2                              else
-C51 COMPILER V9.56.0.0   KEY                                                               12/21/2020 12:13:23 PAGE 2   
+C51 COMPILER V9.56.0.0   KEY                                                               01/23/2021 10:30:08 PAGE 2   
 
   54   2                              {
   55   3                                      key_time++;
@@ -126,7 +126,7 @@ line level    source
  113   3                              }
  114   2                              break;
  115   2      
-C51 COMPILER V9.56.0.0   KEY                                                               12/21/2020 12:13:23 PAGE 3   
+C51 COMPILER V9.56.0.0   KEY                                                               01/23/2021 10:30:08 PAGE 3   
 
  116   2                      case KEY_STATE_2:
  117   2                              if ( key_press == 1 )
@@ -190,7 +190,7 @@ line level    source
  175          static void Key_SKU_display ( void )
  176          {
  177   1              tube_num.SKU_std++;
-C51 COMPILER V9.56.0.0   KEY                                                               12/21/2020 12:13:23 PAGE 4   
+C51 COMPILER V9.56.0.0   KEY                                                               01/23/2021 10:30:08 PAGE 4   
 
  178   1              if ( tube_num.SKU_std > SKU_MAX )
  179   1              {
@@ -254,7 +254,7 @@ line level    source
  237   2                              tube_num.bit3 = 1;
  238   2                              tube_num.bit4 = 4;
  239   2                              break;
-C51 COMPILER V9.56.0.0   KEY                                                               12/21/2020 12:13:23 PAGE 5   
+C51 COMPILER V9.56.0.0   KEY                                                               01/23/2021 10:30:08 PAGE 5   
 
  240   2                      case K9017:
  241   2                              tube_num.bit1 = 9;

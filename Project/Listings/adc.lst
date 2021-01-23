@@ -1,4 +1,4 @@
-C51 COMPILER V9.56.0.0   ADC                                                               12/21/2020 12:13:23 PAGE 1   
+C51 COMPILER V9.56.0.0   ADC                                                               01/23/2021 10:30:08 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE ADC
@@ -62,7 +62,7 @@ line level    source
   50   1      
   51   1              ADCC0 |= 0x40;                                  //启动ADC转换
   52   1              while ( ! ( ADCC0&0x20 ) );                     //等待ADC转换结束
-C51 COMPILER V9.56.0.0   ADC                                                               12/21/2020 12:13:23 PAGE 2   
+C51 COMPILER V9.56.0.0   ADC                                                               01/23/2021 10:30:08 PAGE 2   
 
   53   1              ADCC0 &=~ 0x20;                                 //清除标志位
   54   1              adc_val = ADCR;                                 //获取ADC的值
@@ -126,7 +126,7 @@ line level    source
  112   1      }
  113          
  114          static u8 get_ADC_value_EX_channl ( void ) //u16* temp_std,u16* heat_std
-C51 COMPILER V9.56.0.0   ADC                                                               12/21/2020 12:13:23 PAGE 3   
+C51 COMPILER V9.56.0.0   ADC                                                               01/23/2021 10:30:08 PAGE 3   
 
  115          {
  116   1              u16 ch0_adc = 0,ch1_adc =0,ch2_adc =0,ch3_adc =0;
@@ -190,7 +190,7 @@ line level    source
  173   1              temp = 0;
  174   1      
  175   1              temp = ( float ) ch2_ad_value/4095*ADC_CAILI;
-C51 COMPILER V9.56.0.0   ADC                                                               12/21/2020 12:13:23 PAGE 4   
+C51 COMPILER V9.56.0.0   ADC                                                               01/23/2021 10:30:08 PAGE 4   
 
  176   1      //      KEY_printf ( "adv2f = %f \r\n",temp ); //pjw set
  177   1              * ch2_v = ( u16 ) temp;
@@ -254,7 +254,7 @@ line level    source
  235   5                                                      else
  236   5                                                      {
  237   6                                                              return Heat_test_fail;
-C51 COMPILER V9.56.0.0   ADC                                                               12/21/2020 12:13:23 PAGE 5   
+C51 COMPILER V9.56.0.0   ADC                                                               01/23/2021 10:30:08 PAGE 5   
 
  238   6                                                      }
  239   5                                              }
@@ -318,7 +318,7 @@ line level    source
  297   4                                      case K8104:
  298   4                                      case K8105:
  299   4                                              if ( ( Temper_res > K8104_MIN_HEAT ) && ( Temper_res < K8104_MAX_TEMPER ) )
-C51 COMPILER V9.56.0.0   ADC                                                               12/21/2020 12:13:23 PAGE 6   
+C51 COMPILER V9.56.0.0   ADC                                                               01/23/2021 10:30:08 PAGE 6   
 
  300   4                                              {
  301   5                                                      if ( ( Heat_res > K8104_MIN_HEAT ) && ( Heat_res < K8104_MAX_HEAT ) )
@@ -382,7 +382,7 @@ line level    source
  359   3                                      LED2 = !LED2;
  360   3                                      LED1 = 1;
  361   3                                      LED0 = 1;
-C51 COMPILER V9.56.0.0   ADC                                                               12/21/2020 12:13:23 PAGE 7   
+C51 COMPILER V9.56.0.0   ADC                                                               01/23/2021 10:30:08 PAGE 7   
 
  362   3                                      break;
  363   3                      }
